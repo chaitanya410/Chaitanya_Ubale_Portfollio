@@ -16,6 +16,7 @@ import CloudOutlinedIcon from '@mui/icons-material/CloudOutlined';
 import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined';
 import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import Reveal from './Reveal';
 import heroImg from '../../assets/network-hero.jpg';
 import goldAward from '../../assets/award-gold.jpg';
@@ -33,6 +34,7 @@ const NAV = [
   { id: 'experience', label: 'Experience' },
   { id: 'projects', label: 'Projects' },
   { id: 'awards', label: 'Awards' },
+  { id: 'publications', label: 'Publications' },
   { id: 'contact', label: 'Contact' },
 ];
 
@@ -181,6 +183,15 @@ const CERTS = [
 const EDUCATION = [
   { title: 'B.E. Computer Science Engineering', org: 'CGPA: 8.37', year: '2019 – 2023' },
   { title: 'HSC — Maharashtra State Board', org: '81.23%', year: '2017 – 2018' },
+];
+
+const PUBLICATIONS = [
+  {
+    title: 'Case Study: Prediction on Iris Dataset using KNN Algorithm',
+    venue: 'International Research Journal of Engineering and Technology (IRJET) — Vol. 10, Issue 4, April 2023',
+    authors: 'Shreyas Tayade, Rakhi Gupta, Deval Kherde, Chaitanya Ubale',
+    link: 'https://www.irjet.net/archives/V10/i4/IRJET-V10I447.pdf',
+  },
 ];
 
 const SectionLabel: React.FC<{ index: string; title: string }> = ({ index, title }) => (
@@ -772,10 +783,54 @@ const Portfolio: React.FC = () => {
         </Container>
       </Box>
 
+      {/* PUBLICATIONS */}
+      <Box id="publications" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 } }}>
+        <Container maxWidth="lg">
+          <Reveal><SectionLabel index="08" title="Publications" /></Reveal>
+          <Reveal delay={100}>
+            <Typography sx={{ fontSize: { xs: '1.6rem', md: '2.6rem' }, fontWeight: 500, letterSpacing: '-0.025em', mb: { xs: 6, md: 8 } }}>
+              Published <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>research.</Box>
+            </Typography>
+          </Reveal>
+          <Stack spacing={2}>
+            {PUBLICATIONS.map((p) => (
+              <Reveal key={p.title}>
+                <Box sx={{
+                  p: { xs: 3, md: 4 },
+                  border: '1px solid rgba(197,160,89,0.2)',
+                  display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 3,
+                  transition: 'all .4s cubic-bezier(.22,1,.36,1)',
+                  '&:hover': { borderColor: GOLD, transform: 'translateY(-4px)', boxShadow: '0 0 60px rgba(197,160,89,0.18)' },
+                }}>
+                  <Stack direction="row" spacing={2.5} alignItems="flex-start" sx={{ maxWidth: 640 }}>
+                    <ArticleOutlinedIcon sx={{ color: GOLD, fontSize: 22, mt: 0.3 }} />
+                    <Box>
+                      <Typography sx={{ fontSize: '1.1rem', fontWeight: 500 }}>{p.title}</Typography>
+                      <Typography variant="body2" sx={{ color: GOLD, mt: 0.5 }}>{p.venue}</Typography>
+                      <Typography variant="body2" sx={{ mt: 0.5 }}>{p.authors}</Typography>
+                    </Box>
+                  </Stack>
+                  <Button
+                    variant="outlined"
+                    component="a"
+                    href={p.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    endIcon={<ArrowOutwardIcon />}
+                  >
+                    View Paper
+                  </Button>
+                </Box>
+              </Reveal>
+            ))}
+          </Stack>
+        </Container>
+      </Box>
+
       {/* CONTACT */}
       <Box id="contact" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: '#0E1015' }}>
         <Container maxWidth="md">
-          <Reveal><SectionLabel index="08" title="Get In Touch" /></Reveal>
+          <Reveal><SectionLabel index="09" title="Get In Touch" /></Reveal>
           <Reveal delay={120}>
             <Typography sx={{ fontSize: { xs: '2.2rem', md: '4rem' }, fontWeight: 500, letterSpacing: '-0.035em', lineHeight: 1.05, mb: { xs: 5, md: 8 } }}>
               Let’s build something
