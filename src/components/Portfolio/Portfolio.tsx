@@ -40,7 +40,7 @@ const SKILL_GROUPS = [
   {
     label: 'Backend & Databases',
     icon: <StorageOutlinedIcon />,
-    items: ['Node.js', 'Express.js', 'MS-SQL', 'MongoDB'],
+    items: ['Node.js', 'Express.js', 'MS-SQL','PG-Admin','Supabase', 'MongoDB'],
   },
   {
     label: 'Frontend',
@@ -65,7 +65,7 @@ const SKILL_GROUPS = [
 ];
 
 const STATS = [
-  { value: '3+', label: 'Years of Experience' },
+  { value: '2+', label: 'Years of Experience' },
   { value: '₹5Cr+', label: 'Weekly Volume Automated' },
   { value: '3,000+', label: 'Customers Served' },
   { value: '5', label: 'Banking Partners Integrated' },
@@ -110,16 +110,10 @@ const EXPERIENCE = [
 ];
 
 const PROJECTS = [
-  {
-    title: 'Referral and Loyalty Web Application',
-    tag: 'Real Estate · Customer Service',
-    desc: 'A full-stack customer service application managing client referral and loyalty programs for a major real estate project — serving a base of 3,000+ customers who track and claim rewards via an integrated AppPayout gateway.',
-    stack: ['React.js', 'Material UI', 'Node.js', 'Express.js', 'MS-SQL'],
-  },
-  {
+    {
     title: 'E-Collection System',
     tag: 'Fintech · Banking Integration',
-    desc: 'A secure backend consuming status-check APIs from SCB, SBM, ICICI, HDFC and RBL to automate payment verification, processing and reconciliation — orchestrating 600 virtual accounts across 300 applications and ₹5 Crore in average weekly transaction volume.',
+    desc: 'A secure backend consuming status-check APIs from Standard Chartered Bank (UK), State Bank of Mauritius, ICICI, HDFC and RBL to automate Virtual accounts creation and transactions, payment verification, processing and reconciliation — orchestrating 600 virtual accounts across 300 applications and ₹5 Crore in average weekly transaction volume.',
     stack: ['Node.js', 'MS-SQL', 'ICICI', 'HDFC', 'SBM', 'RBL', 'SCB'],
   },
   {
@@ -129,11 +123,42 @@ const PROJECTS = [
     stack: ['Node.js', 'ICICI APIs', 'E-NACH', 'Automated Billing'],
   },
   {
+    title: 'VJ-Carnival 2026',
+    tag: 'Event Management · Full-Stack',
+    desc: 'A comprehensive full-stack information and ticketing platform built for Carnival 2026, successfully processing over 1,500 user registrations. The seamless frontend experience and robust backend architecture helped propel the festival to become the #1 ranked event on the Zomato District app.',
+    stack: ['React.js', 'Node.js', 'Express.js', 'MongoDB', 'Material UI'],
+  },
+  
+  {
+    title: 'Referral and Loyalty Web Application',
+    tag: 'Real Estate · Customer Service',
+    desc: 'A full-stack customer service application managing client referral and loyalty programs for a major real estate project — serving a base of 3,000+ customers who track and claim rewards via an integrated AppPayout gateway.',
+    stack: ['React.js', 'Material UI', 'Node.js', 'Express.js', 'MS-SQL'],
+  },
+  {
+    title: 'Custom Payment Gateway',
+    tag: 'Fintech · Payment Infrastructure',
+    desc: 'A highly secure, enterprise-grade payment processing platform developed as an in-house alternative to Razorpay. Built by directly consuming ICICI banking APIs, the system features a bulletproof transaction architecture with rigorous security protocols, maintainable audit logging, real-time tracking, and proactive system monitoring.',
+    stack: ['Node.js', 'Express.js', 'PostgreSQL', 'ICICI APIs', 'System Monitoring'],
+  },
+  {
     title: 'LLM Application with RAG',
     tag: 'AI / ML · Retrieval-Augmented Generation',
     desc: 'An AI/ML application leveraging Python and vector database technology, featuring Retrieval-Augmented Generation (RAG) with integrated open-source LLMs such as OLLAMA for domain-grounded responses.',
     stack: ['Python', 'OLLAMA', 'Vector DB', 'RAG', 'LLM'],
   },
+  {
+    title: 'Building Theory Web Platform',
+    tag: 'Full-Stack · International Client',
+    desc: 'A full-stack web application developed during an internship for a Canadian client, "Building Theory." Engineered a responsive frontend using React.js and Redux for complex state management, integrated with a scalable Node.js backend to deliver a seamless user experience.',
+    stack: ['React.js', 'Redux', 'Node.js', 'Express.js'],
+  },
+  {
+    title: 'Acne Image Segmentation',
+    tag: 'Computer Vision · Healthcare AI',
+    desc: 'An AI/ML internship project focused on automated dermatological analysis. Developed and trained a computer vision model using Python to perform precise image segmentation of acne, enabling accurate detection and mapping of skin conditions.',
+    stack: ['Python', 'Computer Vision', 'Machine Learning', 'Image Processing'],
+  }
 ];
 
 const AWARDS = [
