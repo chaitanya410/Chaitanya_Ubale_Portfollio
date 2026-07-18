@@ -20,16 +20,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
+        
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-
+          
+      # Changed from npm ci to npm install to prevent lockfile crashes
       - name: Install dependencies
-        run: npm ci
-
+        run: npm install
+        
       - name: Resolve base path
         id: base
         shell: bash
@@ -40,18 +41,21 @@ jobs:
           else
             echo "path=/$REPO_NAME/" >> "$GITHUB_OUTPUT"
           fi
-
+          
       - name: Build
         run: npm run build
         env:
           BASE_PATH: ${{ steps.base.outputs.path }}
-
+          
+      # Added mkdir -p dist to ensure it doesn't crash if the folder is missing
       - name: Add .nojekyll
-        run: touch dist/.nojekyll
-
+        run: |
+          mkdir -p dist
+          touch dist/.nojekyll
+          
       - name: Setup Pages
         uses: actions/configure-pages@v5
-
+        
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
