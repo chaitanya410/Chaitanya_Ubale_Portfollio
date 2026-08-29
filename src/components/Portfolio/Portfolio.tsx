@@ -342,7 +342,7 @@ const Portfolio: React.FC = () => {
                     href={`${import.meta.env.BASE_URL}Chaitanya-Ubale-Resume.pdf`}
                     download="Chaitanya-Ubale-Resume.pdf"
                     endIcon={<FileDownloadOutlinedIcon />}
-                  >
+                  > 
                     Download Resume
                   </Button>
                   <Button variant="outlined" onClick={() => scrollTo('contact')} endIcon={<ArrowOutwardIcon />}>
