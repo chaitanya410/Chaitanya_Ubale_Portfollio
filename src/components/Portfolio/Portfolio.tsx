@@ -23,6 +23,11 @@ import goldAward from '../../assets/award-gold.jpg';
 import silverAward from '../../assets/award-silver.jpg';
 import communityImg from '../../assets/community-event.jpg';
 import profilePhoto from '../../assets/profile-photo.jpg';
+import iciciLogo from '../../assets/bank-logos/icici-bank-logo-vector-free-11574201415tjm5c6ttti.png';
+import hdfcLogo from '../../assets/bank-logos/HDFC.jpg';
+import sbmLogo from '../../assets/bank-logos/SBM bank.jpg';
+import rblLogo from '../../assets/bank-logos/RBL.png';
+import scbLogo from '../../assets/bank-logos/StandardChartered.png';
 
 const GOLD = '#C5A059';
 const OBSIDIAN = '#0B0C10';
@@ -31,6 +36,7 @@ const OFFWHITE = '#EEEEEE';
 const NAV = [
   { id: 'about', label: 'About' },
   { id: 'skills', label: 'Skills' },
+  { id: 'partners', label: 'Banking Partners' },
   { id: 'experience', label: 'Experience' },
   { id: 'projects', label: 'Projects' },
   { id: 'awards', label: 'Awards' },
@@ -71,6 +77,39 @@ const STATS = [
   { value: '₹5Cr+', label: 'Weekly Volume Automated' },
   { value: '3,000+', label: 'Customers Served' },
   { value: '5', label: 'Banking Partners Integrated' },
+];
+
+const BANKING_PARTNERS = [
+  {
+    name: 'ICICI Bank',
+    logo: iciciLogo,
+    description: 'Integrated ICICI APIs for custom payment gateway orchestration, mandate lifecycle automation, and real-time transaction reconciliation workflows.',
+    services: ['Payment Gateway', 'E-NACH', 'Reconciliation'],
+  },
+  {
+    name: 'HDFC Bank',
+    logo: hdfcLogo,
+    description: 'Connected HDFC payment and status-checking flows to automate verification, account updates, and secure financial data exchange.',
+    services: ['Status APIs', 'Payouts', 'Verification'],
+  },
+  {
+    name: 'SBM Bank',
+    logo: sbmLogo,
+    description: 'Built and maintained SBM integrations for virtual-account processes, transaction monitoring, and payment validation across high-volume applications.',
+    services: ['Virtual Accounts', 'Monitoring', 'Validation'],
+  },
+  {
+    name: 'RBL Bank',
+    logo: rblLogo,
+    description: 'Worked with RBL APIs for payment approval checks, ledger validations, and automated processing logic in fin-tech transaction pipelines.',
+    services: ['Ledger Checks', 'Approval Flow', 'Automation'],
+  },
+  {
+    name: 'Standard Chartered',
+    logo: scbLogo,
+    description: 'Consumed Standard Chartered banking APIs for stable status checks, secure settlement coordination, and end-to-end payment confidence at scale.',
+    services: ['Bank Status', 'Settlement', 'Monitoring'],
+  },
 ];
 
 const EXPERIENCE = [
@@ -342,7 +381,7 @@ const Portfolio: React.FC = () => {
                     href={`${import.meta.env.BASE_URL}Chaitanya-Ubale-Resume.pdf`}
                     download="Chaitanya-Ubale-Resume.pdf"
                     endIcon={<FileDownloadOutlinedIcon />}
-                  > 
+                  >
                     Download Resume
                   </Button>
                   <Button variant="outlined" onClick={() => scrollTo('contact')} endIcon={<ArrowOutwardIcon />}>
@@ -543,10 +582,70 @@ const Portfolio: React.FC = () => {
         </Container>
       </Box>
 
+      {/* BANKING PARTNERS */}
+      <Box id="partners" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: '#0E1015' }}>
+        <Container maxWidth="lg">
+          <Reveal><SectionLabel index="03" title="Banking Partners" /></Reveal>
+          <Reveal delay={100}>
+            <Typography sx={{ fontSize: { xs: '1.8rem', md: '3rem' }, fontWeight: 500, letterSpacing: '-0.03em', mb: { xs: 6, md: 10 }, maxWidth: 820, lineHeight: 1.1 }}>
+              Financial infrastructure <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>built on bank APIs.</Box>
+            </Typography>
+          </Reveal>
+          <Grid container spacing={{ xs: 3, md: 4 }}>
+            {BANKING_PARTNERS.map((bank, i) => (
+              <Grid size={{ xs: 12, sm: 6, lg: 4 }} key={bank.name}>
+                <Reveal delay={i * 100}>
+                  <Box sx={{
+                    p: { xs: 3, md: 4 }, height: '100%',
+                    border: '1px solid rgba(197,160,89,0.18)',
+                    background: 'linear-gradient(180deg, rgba(15,19,24,0.75), rgba(11,12,16,0.96))',
+                    transition: 'all .6s cubic-bezier(.22,1,.36,1)',
+                    '&:hover': {
+                      borderColor: GOLD,
+                      transform: 'translateY(-4px)',
+                      boxShadow: '0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(197,160,89,0.12)',
+                    },
+                  }}>
+                    <Box sx={{
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      height: 120, border: '1px solid rgba(197,160,89,0.12)',
+                      background: 'rgba(255,255,255,0.02)', mb: 3,
+                    }}>
+                      <Box
+                        component="img"
+                        src={bank.logo}
+                        alt={`${bank.name} logo`}
+                        sx={{ maxWidth: '72%', maxHeight: 74, objectFit: 'contain', filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.18))' }}
+                      />
+                    </Box>
+                    <Typography sx={{ fontSize: '1.45rem', fontWeight: 500, letterSpacing: '-0.015em', lineHeight: 1.2 }}>
+                      {bank.name}
+                    </Typography>
+                    <Typography variant="body1" sx={{ mt: 2, color: 'rgba(238,238,238,0.75)' }}>
+                      {bank.description}
+                    </Typography>
+                    <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mt: 3 }}>
+                      {bank.services.map((service) => (
+                        <Box key={service} sx={{
+                          px: 1.5, py: 0.6, fontSize: '0.7rem', letterSpacing: '0.05em',
+                          color: 'rgba(238,238,238,0.8)', border: '1px solid rgba(238,238,238,0.1)',
+                        }}>
+                          {service}
+                        </Box>
+                      ))}
+                    </Stack>
+                  </Box>
+                </Reveal>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </Box>
+
       {/* EXPERIENCE */}
       <Box id="experience" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 } }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="03" title="Professional Experience" /></Reveal>
+          <Reveal><SectionLabel index="04" title="Professional Experience" /></Reveal>
           <Stack spacing={{ xs: 6, md: 8 }}>
             {EXPERIENCE.map((e, i) => (
               <Reveal key={i} delay={i * 80}>
@@ -582,7 +681,7 @@ const Portfolio: React.FC = () => {
       {/* PROJECTS — distinct from Experience */}
       <Box id="projects" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: '#0E1015' }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="04" title="Technical Projects" /></Reveal>
+          <Reveal><SectionLabel index="05" title="Technical Projects" /></Reveal>
           <Reveal delay={100}>
             <Typography sx={{ fontSize: { xs: '1.8rem', md: '3rem' }, fontWeight: 500, letterSpacing: '-0.03em', mb: { xs: 6, md: 10 }, maxWidth: 820, lineHeight: 1.1 }}>
               Selected <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>case studies.</Box>
@@ -636,7 +735,7 @@ const Portfolio: React.FC = () => {
       {/* AWARDS */}
       <Box id="awards" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 } }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="05" title="Achievements & Awards" /></Reveal>
+          <Reveal><SectionLabel index="06" title="Achievements & Awards" /></Reveal>
           <Reveal delay={100}>
             <Typography sx={{ fontSize: { xs: '1.6rem', md: '2.6rem' }, fontWeight: 500, letterSpacing: '-0.025em', mb: { xs: 6, md: 8 } }}>
               Recognized for <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>quality.</Box>
@@ -706,7 +805,7 @@ const Portfolio: React.FC = () => {
       {/* ACTIVITIES + COMMUNITY */}
       <Box sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: '#0E1015' }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="06" title="Activities & Honors" /></Reveal>
+          <Reveal><SectionLabel index="07" title="Activities & Honors" /></Reveal>
           <Grid container spacing={{ xs: 5, md: 8 }} alignItems="center">
             <Grid size={{ xs: 12, md: 6 }}>
               <Reveal>
@@ -746,7 +845,7 @@ const Portfolio: React.FC = () => {
       {/* CERTIFICATIONS + EDUCATION */}
       <Box sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 } }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="07" title="Certifications & Education" /></Reveal>
+          <Reveal><SectionLabel index="08" title="Certifications & Education" /></Reveal>
           <Grid container spacing={{ xs: 5, md: 8 }}>
             <Grid size={{ xs: 12, md: 6 }}>
               <Reveal>
@@ -786,7 +885,7 @@ const Portfolio: React.FC = () => {
       {/* PUBLICATIONS */}
       <Box id="publications" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 } }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="08" title="Publications" /></Reveal>
+          <Reveal><SectionLabel index="09" title="Publications" /></Reveal>
           <Reveal delay={100}>
             <Typography sx={{ fontSize: { xs: '1.6rem', md: '2.6rem' }, fontWeight: 500, letterSpacing: '-0.025em', mb: { xs: 6, md: 8 } }}>
               Published <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>research.</Box>
@@ -830,7 +929,7 @@ const Portfolio: React.FC = () => {
       {/* CONTACT */}
       <Box id="contact" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: '#0E1015' }}>
         <Container maxWidth="md">
-          <Reveal><SectionLabel index="09" title="Get In Touch" /></Reveal>
+          <Reveal><SectionLabel index="10" title="Get In Touch" /></Reveal>
           <Reveal delay={120}>
             <Typography sx={{ fontSize: { xs: '2.2rem', md: '4rem' }, fontWeight: 500, letterSpacing: '-0.035em', lineHeight: 1.05, mb: { xs: 5, md: 8 } }}>
               Let’s build something
