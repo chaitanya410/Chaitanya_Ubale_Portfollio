@@ -23,14 +23,35 @@ import goldAward from '../../assets/award-gold.jpg';
 import silverAward from '../../assets/award-silver.jpg';
 import communityImg from '../../assets/community-event.jpg';
 import profilePhoto from '../../assets/profile-photo.jpg';
+import iciciLogo from '../../assets/bank-logos/icici-bank-logo-vector-free-11574201415tjm5c6ttti.png';
+import hdfcLogo from '../../assets/bank-logos/HDFC.jpg';
+import sbmLogo from '../../assets/bank-logos/SBM bank.jpg';
+import rblLogo from '../../assets/bank-logos/RBL.png';
+import scbLogo from '../../assets/bank-logos/StandardChartered.png';
 
-const GOLD = '#C5A059';
-const OBSIDIAN = '#0B0C10';
-const OFFWHITE = '#EEEEEE';
+
+const COLOR_SCHEMES = {
+  gold: { name: 'Gold', primary: '#C5A059', secondary: '#0B0C10', surface: '#0E1015', text: '#EEEEEE' },
+  emerald: { name: 'Emerald', primary: '#39D98A', secondary: '#061310', surface: '#0D1715', text: '#EEFDF7' },
+  cyan: { name: 'Cyan', primary: '#4AD7FF', secondary: '#07141A', surface: '#0D1A20', text: '#EAFBFF' },
+  violet: { name: 'Violet', primary: '#A46AFF', secondary: '#120D1B', surface: '#171220', text: '#F4EEFF' },
+  rose: { name: 'Rose', primary: '#FF7A9C', secondary: '#160A10', surface: '#1C0F18', text: '#FFF0F4' },
+} as const;
+
+const hexToRgba = (hex: string, alpha: number) => {
+  const value = hex.replace('#', '');
+  const safe = value.length === 3 ? value.split('').map((char) => char + char).join('') : value;
+  const numeric = Number.parseInt(safe, 16);
+  const r = (numeric >> 16) & 255;
+  const g = (numeric >> 8) & 255;
+  const b = numeric & 255;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
 
 const NAV = [
   { id: 'about', label: 'About' },
   { id: 'skills', label: 'Skills' },
+  { id: 'partners', label: 'Banking Partners' },
   { id: 'experience', label: 'Experience' },
   { id: 'projects', label: 'Projects' },
   { id: 'awards', label: 'Awards' },
@@ -71,6 +92,39 @@ const STATS = [
   { value: '₹5Cr+', label: 'Weekly Volume Automated' },
   { value: '3,000+', label: 'Customers Served' },
   { value: '5', label: 'Banking Partners Integrated' },
+];
+
+const BANKING_PARTNERS = [
+  {
+    name: 'ICICI Bank',
+    logo: iciciLogo,
+    description: 'Integrated ICICI APIs for custom payment gateway orchestration, mandate lifecycle automation, and real-time transaction reconciliation workflows.',
+    services: ['Payment Gateway', 'E-NACH', 'Reconciliation'],
+  },
+  {
+    name: 'HDFC Bank',
+    logo: hdfcLogo,
+    description: 'Connected HDFC payment and status-checking flows to automate verification, account updates, and secure financial data exchange.',
+    services: ['Status APIs', 'Payouts', 'Verification'],
+  },
+  {
+    name: 'SBM Bank',
+    logo: sbmLogo,
+    description: 'Built and maintained SBM integrations for virtual-account processes, transaction monitoring, and payment validation across high-volume applications.',
+    services: ['Virtual Accounts', 'Monitoring', 'Validation'],
+  },
+  {
+    name: 'RBL Bank',
+    logo: rblLogo,
+    description: 'Worked with RBL APIs for payment approval checks, ledger validations, and automated processing logic in fin-tech transaction pipelines.',
+    services: ['Ledger Checks', 'Approval Flow', 'Automation'],
+  },
+  {
+    name: 'Standard Chartered',
+    logo: scbLogo,
+    description: 'Consumed Standard Chartered banking APIs for stable status checks, secure settlement coordination, and end-to-end payment confidence at scale.',
+    services: ['Bank Status', 'Settlement', 'Monitoring'],
+  },
 ];
 
 const EXPERIENCE = [
@@ -194,11 +248,11 @@ const PUBLICATIONS = [
   },
 ];
 
-const SectionLabel: React.FC<{ index: string; title: string }> = ({ index, title }) => (
+const SectionLabel: React.FC<{ index: string; title: string; accent: string; text: string }> = ({ index, title, accent, text }) => (
   <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: { xs: 5, md: 8 } }}>
-    <Typography variant="caption" sx={{ color: GOLD }}>{index}</Typography>
-    <Box sx={{ height: '1px', width: 48, background: 'rgba(197,160,89,0.5)' }} />
-    <Typography variant="caption" sx={{ color: OFFWHITE, opacity: 0.7 }}>{title}</Typography>
+    <Typography variant="caption" sx={{ color: accent }}>{index}</Typography>
+    <Box sx={{ height: '1px', width: 48, background: hexToRgba(accent, 0.5) }} />
+    <Typography variant="caption" sx={{ color: text, opacity: 0.7 }}>{title}</Typography>
   </Stack>
 );
 
@@ -207,6 +261,13 @@ const Portfolio: React.FC = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [selectedTheme, setSelectedTheme] = useState<keyof typeof COLOR_SCHEMES>('gold');
+
+  const scheme = COLOR_SCHEMES[selectedTheme];
+  const GOLD = scheme.primary;
+  const OBSIDIAN = scheme.secondary;
+  const OFFWHITE = scheme.text;
+  const SURFACE = scheme.surface;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -227,7 +288,7 @@ const Portfolio: React.FC = () => {
         sx={{
           background: scrolled ? 'rgba(11,12,16,0.78)' : 'transparent',
           backdropFilter: scrolled ? 'blur(18px)' : 'none',
-          borderBottom: scrolled ? '1px solid rgba(197,160,89,0.1)' : '1px solid transparent',
+          borderBottom: scrolled ? `1px solid ${hexToRgba(GOLD, 0.1)}` : '1px solid transparent',
           transition: 'all .5s cubic-bezier(.22,1,.36,1)',
         }}
       >
@@ -243,7 +304,7 @@ const Portfolio: React.FC = () => {
             Chaitanya<span>.</span>
           </Typography>
           {!isMobile ? (
-            <Stack direction="row" spacing={4} alignItems="center">
+            <Stack direction="row" spacing={3} alignItems="center">
               {NAV.map((n, i) => (
                 <Typography
                   key={n.id}
@@ -262,6 +323,25 @@ const Portfolio: React.FC = () => {
                   {n.label}
                 </Typography>
               ))}
+              <Stack direction="row" spacing={1} sx={{ ml: 1, alignItems: 'center' }}>
+                {Object.entries(COLOR_SCHEMES).map(([key, option]) => (
+                  <Box
+                    key={key}
+                    onClick={() => setSelectedTheme(key as keyof typeof COLOR_SCHEMES)}
+                    sx={{
+                      width: 16,
+                      height: 16,
+                      borderRadius: '50%',
+                      background: option.primary,
+                      border: selectedTheme === key ? `2px solid ${OFFWHITE}` : '1px solid rgba(255,255,255,0.4)',
+                      boxShadow: selectedTheme === key ? `0 0 18px ${hexToRgba(option.primary, 0.8)}` : 'none',
+                      cursor: 'pointer',
+                      transition: 'all .25s ease',
+                    }}
+                    aria-label={`Select ${option.name} color theme`}
+                  />
+                ))}
+              </Stack>
             </Stack>
           ) : (
             <IconButton onClick={() => setMobileOpen(!mobileOpen)} sx={{ color: OFFWHITE }} aria-label="menu">
@@ -282,7 +362,7 @@ const Portfolio: React.FC = () => {
             overflow: 'hidden', maxHeight: mobileOpen ? 460 : 0,
             transition: 'max-height .55s cubic-bezier(.22,1,.36,1)',
             background: 'rgba(11,12,16,0.95)', backdropFilter: 'blur(20px)',
-            borderTop: mobileOpen ? '1px solid rgba(197,160,89,0.1)' : 'none',
+            borderTop: mobileOpen ? `1px solid ${hexToRgba(GOLD, 0.1)}` : 'none',
           }}>
             <Stack spacing={2.5} sx={{ px: 4, py: 4 }}>
               {NAV.map((n, i) => (
@@ -292,6 +372,22 @@ const Portfolio: React.FC = () => {
                   {n.label}
                 </Typography>
               ))}
+              <Stack direction="row" spacing={1.5} sx={{ pt: 1, alignItems: 'center' }}>
+                {Object.entries(COLOR_SCHEMES).map(([key, option]) => (
+                  <Box
+                    key={key}
+                    onClick={() => setSelectedTheme(key as keyof typeof COLOR_SCHEMES)}
+                    sx={{
+                      width: 18, height: 18, borderRadius: '50%',
+                      background: option.primary,
+                      border: selectedTheme === key ? `2px solid ${OFFWHITE}` : '1px solid rgba(255,255,255,0.35)',
+                      boxShadow: selectedTheme === key ? `0 0 20px ${hexToRgba(option.primary, 0.7)}` : 'none',
+                      cursor: 'pointer',
+                    }}
+                    aria-label={`Select ${option.name} color theme`}
+                  />
+                ))}
+              </Stack>
             </Stack>
           </Box>
         )}
@@ -383,7 +479,7 @@ const Portfolio: React.FC = () => {
                   {/* Soft halo glow */}
                   <Box sx={{
                     position: 'absolute', inset: -40, borderRadius: '50%',
-                    background: `radial-gradient(circle, rgba(197,160,89,0.28) 0%, transparent 60%)`,
+                    background: `radial-gradient(circle, ${hexToRgba(GOLD, 0.28)} 0%, transparent 60%)`,
                     filter: 'blur(20px)', pointerEvents: 'none',
                   }} />
                   {/* Photo */}
@@ -395,8 +491,8 @@ const Portfolio: React.FC = () => {
                     sx={{
                       position: 'absolute', inset: 0, width: '100%', height: '100%',
                       borderRadius: '50%', objectFit: 'cover', objectPosition: 'center 18%',
-                      border: '1px solid rgba(197,160,89,0.35)',
-                      boxShadow: '0 0 60px rgba(197,160,89,0.25), inset 0 0 40px rgba(0,0,0,0.5)',
+                      border: `1px solid ${hexToRgba(GOLD, 0.35)}`,
+                      boxShadow: `0 0 60px ${hexToRgba(GOLD, 0.25)}, inset 0 0 40px rgba(0,0,0,0.5)`,
                       transition: 'transform .8s cubic-bezier(.22,1,.36,1)',
                       '&:hover': { transform: 'scale(1.03)' },
                     }}
@@ -423,7 +519,7 @@ const Portfolio: React.FC = () => {
       </Box>
 
       {/* IMPACT STATS */}
-      <Box sx={{ py: { xs: 6, md: 8 }, px: { xs: 3, md: 8 }, borderTop: '1px solid rgba(197,160,89,0.1)', borderBottom: '1px solid rgba(197,160,89,0.1)' }}>
+      <Box sx={{ py: { xs: 6, md: 8 }, px: { xs: 3, md: 8 }, borderTop: `1px solid ${hexToRgba(GOLD, 0.1)}`, borderBottom: `1px solid ${hexToRgba(GOLD, 0.1)}` }}>
         <Container maxWidth="lg">
           <Grid container spacing={{ xs: 4, md: 3 }}>
             {STATS.map((s, i) => (
@@ -450,7 +546,7 @@ const Portfolio: React.FC = () => {
       {/* ABOUT */}
       <Box id="about" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 } }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="01" title="About" /></Reveal>
+          <Reveal><SectionLabel index="01" title="About" accent={GOLD} text={OFFWHITE} /></Reveal>
           <Grid container spacing={{ xs: 4, md: 10 }}>
             <Grid size={{ xs: 12, md: 4 }}>
               <Reveal>
@@ -486,9 +582,9 @@ const Portfolio: React.FC = () => {
       </Box>
 
       {/* SKILLS */}
-      <Box id="skills" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: '#0E1015' }}>
+      <Box id="skills" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: SURFACE }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="02" title="Core Skills" /></Reveal>
+          <Reveal><SectionLabel index="02" title="Core Skills" accent={GOLD} text={OFFWHITE} /></Reveal>
           <Reveal delay={100}>
             <Typography sx={{ fontSize: { xs: '1.8rem', md: '3rem' }, fontWeight: 500, letterSpacing: '-0.03em', mb: { xs: 6, md: 10 }, maxWidth: 820, lineHeight: 1.1 }}>
               A stack tuned for <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>reliability</Box> at scale.
@@ -508,14 +604,14 @@ const Portfolio: React.FC = () => {
                 <Reveal delay={i * 80}>
                   <Box sx={{
                     p: { xs: 3, md: 4 }, height: '100%',
-                    border: '1px solid rgba(197,160,89,0.16)',
+                    border: `1px solid ${hexToRgba(GOLD, 0.16)}`,
                     transition: 'all .6s cubic-bezier(.22,1,.36,1)',
                     position: 'relative', overflow: 'hidden',
                     '&:hover': {
                       borderColor: GOLD,
-                      background: 'linear-gradient(180deg, rgba(197,160,89,0.04), transparent)',
+                      background: `linear-gradient(180deg, ${hexToRgba(GOLD, 0.04)}, transparent)`,
                       transform: 'translateY(-3px)',
-                      boxShadow: '0 0 40px rgba(197,160,89,0.1)',
+                      boxShadow: `0 0 40px ${hexToRgba(GOLD, 0.1)}`,
                       '& .icn': { color: GOLD },
                     },
                   }}>
@@ -543,15 +639,75 @@ const Portfolio: React.FC = () => {
         </Container>
       </Box>
 
+      {/* BANKING PARTNERS */}
+      <Box id="partners" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: SURFACE }}>
+        <Container maxWidth="lg">
+          <Reveal><SectionLabel index="03" title="Banking Partners" accent={GOLD} text={OFFWHITE} /></Reveal>
+          <Reveal delay={100}>
+            <Typography sx={{ fontSize: { xs: '1.8rem', md: '3rem' }, fontWeight: 500, letterSpacing: '-0.03em', mb: { xs: 6, md: 10 }, maxWidth: 820, lineHeight: 1.1 }}>
+              Financial infrastructure <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>built on bank APIs.</Box>
+            </Typography>
+          </Reveal>
+          <Grid container spacing={{ xs: 3, md: 4 }}>
+            {BANKING_PARTNERS.map((bank, i) => (
+              <Grid size={{ xs: 12, sm: 6, lg: 4 }} key={bank.name}>
+                <Reveal delay={i * 100}>
+                  <Box sx={{
+                    p: { xs: 3, md: 4 }, height: '100%',
+                    border: `1px solid ${hexToRgba(GOLD, 0.18)}`,
+                    background: `linear-gradient(180deg, ${hexToRgba(OBSIDIAN, 0.75)}, ${hexToRgba(OBSIDIAN, 0.96)})`,
+                    transition: 'all .6s cubic-bezier(.22,1,.36,1)',
+                    '&:hover': {
+                      borderColor: GOLD,
+                      transform: 'translateY(-4px)',
+                      boxShadow: `0 20px 60px rgba(0,0,0,0.4), 0 0 40px ${hexToRgba(GOLD, 0.12)}`,
+                    },
+                  }}>
+                    <Box sx={{
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      height: 120, border: `1px solid ${hexToRgba(GOLD, 0.12)}`,
+                      background: 'rgba(255,255,255,0.02)', mb: 3,
+                    }}>
+                      <Box
+                        component="img"
+                        src={bank.logo}
+                        alt={`${bank.name} logo`}
+                        sx={{ maxWidth: '72%', maxHeight: 74, objectFit: 'contain', filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.18))' }}
+                      />
+                    </Box>
+                    <Typography sx={{ fontSize: '1.45rem', fontWeight: 500, letterSpacing: '-0.015em', lineHeight: 1.2 }}>
+                      {bank.name}
+                    </Typography>
+                    <Typography variant="body1" sx={{ mt: 2, color: 'rgba(238,238,238,0.75)' }}>
+                      {bank.description}
+                    </Typography>
+                    <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mt: 3 }}>
+                      {bank.services.map((service) => (
+                        <Box key={service} sx={{
+                          px: 1.5, py: 0.6, fontSize: '0.7rem', letterSpacing: '0.05em',
+                          color: 'rgba(238,238,238,0.8)', border: '1px solid rgba(238,238,238,0.1)',
+                        }}>
+                          {service}
+                        </Box>
+                      ))}
+                    </Stack>
+                  </Box>
+                </Reveal>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </Box>
+
       {/* EXPERIENCE */}
       <Box id="experience" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 } }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="03" title="Professional Experience" /></Reveal>
+          <Reveal><SectionLabel index="04" title="Professional Experience" accent={GOLD} text={OFFWHITE} /></Reveal>
           <Stack spacing={{ xs: 6, md: 8 }}>
             {EXPERIENCE.map((e, i) => (
               <Reveal key={i} delay={i * 80}>
                 <Grid container spacing={{ xs: 2, md: 6 }} sx={{
-                  borderTop: '1px solid rgba(197,160,89,0.15)', pt: { xs: 4, md: 6 },
+                  borderTop: `1px solid ${hexToRgba(GOLD, 0.15)}`, pt: { xs: 4, md: 6 },
                 }}>
                   <Grid size={{ xs: 12, md: 3 }}>
                     <Typography variant="caption">{e.year}</Typography>
@@ -580,9 +736,9 @@ const Portfolio: React.FC = () => {
       </Box>
 
       {/* PROJECTS — distinct from Experience */}
-      <Box id="projects" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: '#0E1015' }}>
+      <Box id="projects" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: SURFACE }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="04" title="Technical Projects" /></Reveal>
+          <Reveal><SectionLabel index="05" title="Technical Projects" accent={GOLD} text={OFFWHITE} /></Reveal>
           <Reveal delay={100}>
             <Typography sx={{ fontSize: { xs: '1.8rem', md: '3rem' }, fontWeight: 500, letterSpacing: '-0.03em', mb: { xs: 6, md: 10 }, maxWidth: 820, lineHeight: 1.1 }}>
               Selected <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>case studies.</Box>
@@ -594,7 +750,7 @@ const Portfolio: React.FC = () => {
                 <Reveal delay={i * 100}>
                   <Box sx={{
                     p: { xs: 4, md: 5 }, height: '100%',
-                    border: '1px solid rgba(197,160,89,0.18)',
+                   border: `1px solid ${hexToRgba(GOLD, 0.18)}`,
                     position: 'relative', overflow: 'hidden',
                     transition: 'all .6s cubic-bezier(.22,1,.36,1)',
                     '&:before': {
@@ -605,7 +761,7 @@ const Portfolio: React.FC = () => {
                     '&:hover': {
                       borderColor: GOLD,
                       transform: 'translateY(-4px)',
-                      boxShadow: '0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(197,160,89,0.12)',
+                     boxShadow: `0 20px 60px rgba(0,0,0,0.4), 0 0 40px ${hexToRgba(GOLD, 0.12)}`,
                       '&:before': { opacity: 1 },
                     },
                   }}>
@@ -636,7 +792,7 @@ const Portfolio: React.FC = () => {
       {/* AWARDS */}
       <Box id="awards" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 } }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="05" title="Achievements & Awards" /></Reveal>
+          <Reveal><SectionLabel index="06" title="Achievements & Awards" accent={GOLD} text={OFFWHITE} /></Reveal>
           <Reveal delay={100}>
             <Typography sx={{ fontSize: { xs: '1.6rem', md: '2.6rem' }, fontWeight: 500, letterSpacing: '-0.025em', mb: { xs: 6, md: 8 } }}>
               Recognized for <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>quality.</Box>
@@ -647,13 +803,13 @@ const Portfolio: React.FC = () => {
               <Grid size={{ xs: 12, md: 6 }} key={a.title}>
                 <Reveal delay={i * 120}>
                   <Box sx={{
-                    border: '1px solid rgba(197,160,89,0.2)',
+                    border: `1px solid ${hexToRgba(GOLD, 0.2)}`,
                     transition: 'all .6s cubic-bezier(.22,1,.36,1)',
                     position: 'relative', overflow: 'hidden',
                     '&:hover': {
                       borderColor: GOLD,
                       transform: 'translateY(-4px)',
-                      boxShadow: '0 0 60px rgba(197,160,89,0.18)',
+                      boxShadow: `0 0 60px ${hexToRgba(GOLD, 0.18)}`,
                     },
                   }}>
                     <Box sx={{
@@ -675,7 +831,7 @@ const Portfolio: React.FC = () => {
               <Reveal delay={240}>
                 <Box sx={{
                   mt: { xs: 2, md: 3 }, p: { xs: 3, md: 4 },
-                  border: '1px solid rgba(197,160,89,0.2)',
+                  border: `1px solid ${hexToRgba(GOLD, 0.2)}`,
                   display: 'flex', alignItems: 'center', gap: 3, flexWrap: 'wrap',
                 }}>
                   <Box sx={{
@@ -683,7 +839,7 @@ const Portfolio: React.FC = () => {
                     border: `1px solid ${GOLD}`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     color: GOLD, fontSize: '1.1rem', fontWeight: 500,
-                    boxShadow: '0 0 30px rgba(197,160,89,0.25)',
+                    boxShadow: `0 0 30px ${hexToRgba(GOLD, 0.25)}`,
                   }}>
                     ★
                   </Box>
@@ -704,9 +860,9 @@ const Portfolio: React.FC = () => {
       </Box>
 
       {/* ACTIVITIES + COMMUNITY */}
-      <Box sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: '#0E1015' }}>
+      <Box sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: SURFACE }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="06" title="Activities & Honors" /></Reveal>
+          <Reveal><SectionLabel index="07" title="Activities & Honors" accent={GOLD} text={OFFWHITE} /></Reveal>
           <Grid container spacing={{ xs: 5, md: 8 }} alignItems="center">
             <Grid size={{ xs: 12, md: 6 }}>
               <Reveal>
@@ -716,7 +872,7 @@ const Portfolio: React.FC = () => {
                 <Stack spacing={2} sx={{ mt: 5 }}>
                   {ACTIVITIES.map((a) => (
                     <Box key={a.role} sx={{
-                      p: 3, border: '1px solid rgba(197,160,89,0.15)',
+                      p: 3, border: `1px solid ${hexToRgba(GOLD, 0.15)}`,
                       transition: 'all .4s ease',
                       '&:hover': { borderColor: GOLD, transform: 'translateX(4px)' },
                     }}>
@@ -731,9 +887,9 @@ const Portfolio: React.FC = () => {
               <Reveal delay={200}>
                 <Box sx={{
                   aspectRatio: '4/5',
-                  backgroundImage: `linear-gradient(180deg, rgba(11,12,16,0) 40%, rgba(11,12,16,0.6)), url(${communityImg})`,
+                  backgroundImage: `linear-gradient(180deg, ${hexToRgba(OBSIDIAN, 0)} 40%, ${hexToRgba(OBSIDIAN, 0.6)}), url(${communityImg})`,
                   backgroundSize: 'cover', backgroundPosition: 'center',
-                  border: '1px solid rgba(197,160,89,0.2)',
+                  border: `1px solid ${hexToRgba(GOLD, 0.2)}`,
                   transition: 'transform .8s cubic-bezier(.22,1,.36,1)',
                   '&:hover': { transform: 'scale(1.01)' },
                 }} />
@@ -746,7 +902,7 @@ const Portfolio: React.FC = () => {
       {/* CERTIFICATIONS + EDUCATION */}
       <Box sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 } }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="07" title="Certifications & Education" /></Reveal>
+          <Reveal><SectionLabel index="08" title="Certifications & Education" accent={GOLD} text={OFFWHITE} /></Reveal>
           <Grid container spacing={{ xs: 5, md: 8 }}>
             <Grid size={{ xs: 12, md: 6 }}>
               <Reveal>
@@ -754,7 +910,7 @@ const Portfolio: React.FC = () => {
                 <Stack spacing={2}>
                   {CERTS.map((c) => (
                     <Stack key={c.title} direction="row" spacing={2.5} alignItems="flex-start"
-                      sx={{ py: 2.5, borderTop: '1px solid rgba(197,160,89,0.12)' }}>
+                      sx={{ py: 2.5, borderTop: `1px solid ${hexToRgba(GOLD, 0.12)}` }}>
                       <VerifiedOutlinedIcon sx={{ color: GOLD, fontSize: 22, mt: 0.3 }} />
                       <Box>
                         <Typography sx={{ fontSize: '1rem', fontWeight: 500 }}>{c.title}</Typography>
@@ -770,7 +926,7 @@ const Portfolio: React.FC = () => {
                 <Typography variant="caption" sx={{ mb: 3, display: 'block' }}>Education</Typography>
                 <Stack spacing={2}>
                   {EDUCATION.map((e) => (
-                    <Box key={e.title} sx={{ py: 2.5, borderTop: '1px solid rgba(197,160,89,0.12)' }}>
+                    <Box key={e.title} sx={{ py: 2.5, borderTop: `1px solid ${hexToRgba(GOLD, 0.12)}` }}>
                       <Typography variant="caption">{e.year}</Typography>
                       <Typography sx={{ mt: 0.5, fontSize: '1rem', fontWeight: 500 }}>{e.title}</Typography>
                       <Typography variant="body2" sx={{ color: GOLD, mt: 0.5 }}>{e.org}</Typography>
@@ -786,7 +942,7 @@ const Portfolio: React.FC = () => {
       {/* PUBLICATIONS */}
       <Box id="publications" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 } }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="08" title="Publications" /></Reveal>
+          <Reveal><SectionLabel index="09" title="Publications" accent={GOLD} text={OFFWHITE} /></Reveal>
           <Reveal delay={100}>
             <Typography sx={{ fontSize: { xs: '1.6rem', md: '2.6rem' }, fontWeight: 500, letterSpacing: '-0.025em', mb: { xs: 6, md: 8 } }}>
               Published <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>research.</Box>
@@ -797,10 +953,10 @@ const Portfolio: React.FC = () => {
               <Reveal key={p.title}>
                 <Box sx={{
                   p: { xs: 3, md: 4 },
-                  border: '1px solid rgba(197,160,89,0.2)',
+                  border: `1px solid ${hexToRgba(GOLD, 0.2)}`,
                   display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 3,
                   transition: 'all .4s cubic-bezier(.22,1,.36,1)',
-                  '&:hover': { borderColor: GOLD, transform: 'translateY(-4px)', boxShadow: '0 0 60px rgba(197,160,89,0.18)' },
+                  '&:hover': { borderColor: GOLD, transform: 'translateY(-4px)', boxShadow: `0 0 60px ${hexToRgba(GOLD, 0.18)}` },
                 }}>
                   <Stack direction="row" spacing={2.5} alignItems="flex-start" sx={{ maxWidth: 640 }}>
                     <ArticleOutlinedIcon sx={{ color: GOLD, fontSize: 22, mt: 0.3 }} />
@@ -828,9 +984,9 @@ const Portfolio: React.FC = () => {
       </Box>
 
       {/* CONTACT */}
-      <Box id="contact" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: '#0E1015' }}>
+      <Box id="contact" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: SURFACE }}>
         <Container maxWidth="md">
-          <Reveal><SectionLabel index="09" title="Get In Touch" /></Reveal>
+          <Reveal><SectionLabel index="10" title="Get In Touch" accent={GOLD} text={OFFWHITE} /></Reveal>
           <Reveal delay={120}>
             <Typography sx={{ fontSize: { xs: '2.2rem', md: '4rem' }, fontWeight: 500, letterSpacing: '-0.035em', lineHeight: 1.05, mb: { xs: 5, md: 8 } }}>
               Let’s build something
@@ -863,7 +1019,7 @@ const Portfolio: React.FC = () => {
             </Box>
           </Reveal>
 
-          <Divider sx={{ my: { xs: 8, md: 12 }, borderColor: 'rgba(197,160,89,0.12)' }} />
+          <Divider sx={{ my: { xs: 8, md: 12 }, borderColor: hexToRgba(GOLD, 0.12) }} />
 
           <Grid container spacing={4}>
             <Grid size={{ xs: 12, sm: 4 }}>
@@ -910,12 +1066,12 @@ const Portfolio: React.FC = () => {
                 aria-label={s.label}
                 sx={{
                   color: 'rgba(238,238,238,0.6)',
-                  border: '1px solid rgba(197,160,89,0.2)',
+                  border: `1px solid ${hexToRgba(GOLD, 0.2)}`,
                   borderRadius: 1, width: 44, height: 44,
                   transition: 'all .4s ease',
                   '&:hover': {
                     color: GOLD, borderColor: GOLD,
-                    boxShadow: '0 0 0 1px rgba(197,160,89,0.4), 0 0 24px rgba(197,160,89,0.18)',
+                    boxShadow: `0 0 0 1px ${hexToRgba(GOLD, 0.4)}, 0 0 24px ${hexToRgba(GOLD, 0.18)}`,
                   },
                 }}>
                 {s.icon}
@@ -925,7 +1081,7 @@ const Portfolio: React.FC = () => {
         </Container>
       </Box>
 
-      <Box sx={{ py: 4, px: { xs: 3, md: 8 }, borderTop: '1px solid rgba(197,160,89,0.08)' }}>
+      <Box sx={{ py: 4, px: { xs: 3, md: 8 }, borderTop: `1px solid ${hexToRgba(GOLD, 0.08)}` }}>
         <Container maxWidth="lg">
           <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" spacing={1}>
             <Typography variant="caption" sx={{ color: 'rgba(238,238,238,0.4)', letterSpacing: '0.08em' }}>
