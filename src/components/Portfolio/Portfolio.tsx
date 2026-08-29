@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {
   Box, Container, Typography, Stack, Button, IconButton, AppBar, Toolbar,
-  Grid, TextField, Divider, useTheme, useMediaQuery, ThemeProvider,
+  Grid, TextField, Divider, useTheme, useMediaQuery,
 } from '@mui/material';
-import { createTheme } from '@mui/material/styles';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -30,6 +29,7 @@ import sbmLogo from '../../assets/bank-logos/SBM bank.jpg';
 import rblLogo from '../../assets/bank-logos/RBL.png';
 import scbLogo from '../../assets/bank-logos/StandardChartered.png';
 
+
 const COLOR_SCHEMES = {
   gold: { name: 'Gold', primary: '#C5A059', secondary: '#0B0C10', surface: '#0E1015', text: '#EEEEEE' },
   emerald: { name: 'Emerald', primary: '#39D98A', secondary: '#061310', surface: '#0D1715', text: '#EEFDF7' },
@@ -47,10 +47,6 @@ const hexToRgba = (hex: string, alpha: number) => {
   const b = numeric & 255;
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
-
-const GOLD = COLOR_SCHEMES.gold.primary;
-const OBSIDIAN = COLOR_SCHEMES.gold.secondary;
-const OFFWHITE = COLOR_SCHEMES.gold.text;
 
 const NAV = [
   { id: 'about', label: 'About' },
@@ -252,11 +248,11 @@ const PUBLICATIONS = [
   },
 ];
 
-const SectionLabel: React.FC<{ index: string; title: string; accent?: string; text?: string }> = ({ index, title, accent = GOLD, text = OFFWHITE }) => (
+const SectionLabel: React.FC<{ index: string; title: string }> = ({ index, title }) => (
   <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: { xs: 5, md: 8 } }}>
-    <Typography variant="caption" sx={{ color: accent }}>{index}</Typography>
-    <Box sx={{ height: '1px', width: 48, background: hexToRgba(accent, 0.5) }} />
-    <Typography variant="caption" sx={{ color: text, opacity: 0.7 }}>{title}</Typography>
+    <Typography variant="caption" sx={{ color: GOLD }}>{index}</Typography>
+    <Box sx={{ height: '1px', width: 48, background: hexToRgba(GOLD, 0.5) }} />
+    <Typography variant="caption" sx={{ color: OFFWHITE, opacity: 0.7 }}>{title}</Typography>
   </Stack>
 );
 
@@ -265,7 +261,6 @@ const Portfolio: React.FC = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [themeMenuOpen, setThemeMenuOpen] = useState(false);
   const [selectedTheme, setSelectedTheme] = useState<keyof typeof COLOR_SCHEMES>('gold');
 
   const scheme = COLOR_SCHEMES[selectedTheme];
@@ -273,70 +268,6 @@ const Portfolio: React.FC = () => {
   const OBSIDIAN = scheme.secondary;
   const OFFWHITE = scheme.text;
   const SURFACE = scheme.surface;
-
-  const brandTheme = React.useMemo(() => createTheme({
-    palette: {
-      mode: 'dark',
-      primary: { main: GOLD, light: hexToRgba(GOLD, 0.8), dark: hexToRgba(GOLD, 0.75), contrastText: OBSIDIAN },
-      secondary: { main: OFFWHITE },
-      background: { default: OBSIDIAN, paper: SURFACE },
-      text: { primary: OFFWHITE, secondary: hexToRgba(OFFWHITE, 0.7) },
-      divider: hexToRgba(GOLD, 0.18),
-    },
-    typography: {
-      fontFamily: '"Space Grotesk", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-      button: { textTransform: 'none', fontWeight: 600, letterSpacing: '0.06em' },
-      caption: { letterSpacing: '0.18em', textTransform: 'uppercase', fontSize: '0.72rem', color: GOLD, fontWeight: 500 },
-    },
-    components: {
-      MuiButton: {
-        styleOverrides: {
-          root: {
-            borderRadius: 2,
-            padding: '14px 28px',
-            fontSize: '0.85rem',
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            transition: 'all .45s cubic-bezier(.22,1,.36,1)',
-          },
-          outlined: {
-            borderColor: hexToRgba(GOLD, 0.45),
-            color: GOLD,
-            '&:hover': {
-              borderColor: GOLD,
-              background: hexToRgba(GOLD, 0.08),
-              boxShadow: `0 0 0 1px ${hexToRgba(GOLD, 0.35)}, 0 0 24px ${hexToRgba(GOLD, 0.16)}`,
-            },
-          },
-          contained: {
-            background: GOLD,
-            color: OBSIDIAN,
-            boxShadow: `0 0 28px ${hexToRgba(GOLD, 0.32)}`,
-            '&:hover': {
-              background: GOLD,
-              filter: 'brightness(1.08)',
-              boxShadow: `0 0 32px ${hexToRgba(GOLD, 0.5)}`,
-            },
-          },
-        },
-      },
-      MuiTextField: {
-        styleOverrides: {
-          root: {
-            '& .MuiOutlinedInput-root': {
-              borderRadius: 2,
-              background: 'rgba(255,255,255,0.02)',
-              '& fieldset': { borderColor: 'rgba(255,255,255,0.08)' },
-              '&:hover fieldset': { borderColor: hexToRgba(GOLD, 0.45) },
-              '&.Mui-focused fieldset': { borderColor: GOLD, borderWidth: 1 },
-            },
-            '& .MuiInputLabel-root': { color: hexToRgba(OFFWHITE, 0.7), letterSpacing: '0.05em' },
-            '& .MuiInputLabel-root.Mui-focused': { color: GOLD },
-          },
-        },
-      },
-    },
-  }), [GOLD, OBSIDIAN, OFFWHITE, SURFACE]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -350,8 +281,7 @@ const Portfolio: React.FC = () => {
   };
 
   return (
-    <ThemeProvider theme={brandTheme}>
-      <Box sx={{ background: OBSIDIAN, color: OFFWHITE, overflowX: 'hidden' }}>
+    <Box sx={{ background: OBSIDIAN, color: OFFWHITE, overflowX: 'hidden' }}>
       {/* NAV */}
       <AppBar
         position="fixed"
@@ -393,135 +323,39 @@ const Portfolio: React.FC = () => {
                   {n.label}
                 </Typography>
               ))}
-
-              <Box sx={{ position: 'relative', ml: 0.5 }}>
-                <Box
-                  onClick={() => setThemeMenuOpen((open) => !open)}
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 0.8,
-                    px: 1.15,
-                    py: 0.6,
-                    borderRadius: 999,
-                    border: `1px solid ${hexToRgba(GOLD, 0.2)}`,
-                    background: 'rgba(11, 12, 16, 0.68)',
-                    backdropFilter: 'blur(8px)',
-                    cursor: 'pointer',
-                    transition: 'all .2s ease',
-                    '&:hover': {
-                      borderColor: hexToRgba(GOLD, 0.42),
-                      boxShadow: `0 0 18px ${hexToRgba(GOLD, 0.08)}`,
-                    },
-                  }}
-                >
-                  <Box sx={{
-                    width: 9,
-                    height: 9,
-                    borderRadius: '50%',
-                    background: GOLD,
-                    boxShadow: `0 0 12px ${hexToRgba(GOLD, 0.9)}`,
-                  }} />
-                  <Box component="span" sx={{ fontSize: '0.55rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: OFFWHITE }}>
-                    Theme
-                  </Box>
-                  <KeyboardArrowDownIcon sx={{ fontSize: 14, color: hexToRgba(OFFWHITE, 0.7), transform: themeMenuOpen ? 'rotate(180deg)' : 'none', transition: 'transform .2s ease' }} />
-                </Box>
-
-                {themeMenuOpen && (
-                  <Box sx={{
-                    position: 'absolute',
-                    top: 'calc(100% + 10px)',
-                    right: 0,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 0.75,
-                    minWidth: 180,
-                    p: 1,
-                    borderRadius: 2,
-                    background: 'rgba(11,12,16,0.96)',
-                    border: `1px solid ${hexToRgba(GOLD, 0.18)}`,
-                    boxShadow: `0 16px 36px rgba(0,0,0,0.38), 0 0 24px ${hexToRgba(GOLD, 0.08)}`,
-                  }}>
-                    {Object.entries(COLOR_SCHEMES).map(([key, option]) => {
-                      const isActive = selectedTheme === key;
-
-                      return (
-                        <Box
-                          key={key}
-                          onClick={() => {
-                            setSelectedTheme(key as keyof typeof COLOR_SCHEMES);
-                            setThemeMenuOpen(false);
-                          }}
-                          sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            gap: 1,
-                            px: 1.1,
-                            py: 0.8,
-                            borderRadius: 1,
-                            background: isActive ? hexToRgba(option.primary, 0.1) : 'transparent',
-                            border: `1px solid ${isActive ? hexToRgba(option.primary, 0.4) : 'transparent'}`,
-                            color: OFFWHITE,
-                            fontSize: '0.56rem',
-                            letterSpacing: '0.1em',
-                            textTransform: 'uppercase',
-                            cursor: 'pointer',
-                            transition: 'all .2s ease',
-                            '&:hover': {
-                              background: hexToRgba(option.primary, 0.08),
-                              borderColor: hexToRgba(option.primary, 0.35),
-                            },
-                          }}
-                        >
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                            <Box sx={{ width: 9, height: 9, borderRadius: '50%', background: option.primary, boxShadow: `0 0 10px ${hexToRgba(option.primary, 0.9)}` }} />
-                            {option.name}
-                          </Box>
-                          {isActive && <Box sx={{ width: 7, height: 7, borderRadius: '50%', background: option.primary, boxShadow: `0 0 10px ${hexToRgba(option.primary, 0.9)}` }} />}
-                        </Box>
-                      );
-                    })}
-                  </Box>
-                )}
-              </Box>
+              <Stack direction="row" spacing={1} sx={{ ml: 1, alignItems: 'center' }}>
+                {Object.entries(COLOR_SCHEMES).map(([key, option]) => (
+                  <Box
+                    key={key}
+                    onClick={() => setSelectedTheme(key as keyof typeof COLOR_SCHEMES)}
+                    sx={{
+                      width: 16,
+                      height: 16,
+                      borderRadius: '50%',
+                      background: option.primary,
+                      border: selectedTheme === key ? `2px solid ${OFFWHITE}` : '1px solid rgba(255,255,255,0.4)',
+                      boxShadow: selectedTheme === key ? `0 0 18px ${hexToRgba(option.primary, 0.8)}` : 'none',
+                      cursor: 'pointer',
+                      transition: 'all .25s ease',
+                    }}
+                    aria-label={`Select ${option.name} color theme`}
+                  />
+                ))}
+              </Stack>
             </Stack>
           ) : (
-            <Stack direction="row" spacing={1} alignItems="center">
-              <Box
-                onClick={() => setThemeMenuOpen((open) => !open)}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: 28,
-                  height: 28,
-                  borderRadius: '50%',
-                  border: `1px solid ${hexToRgba(GOLD, 0.26)}`,
-                  background: 'rgba(11,12,16,0.7)',
-                  cursor: 'pointer',
-                  boxShadow: `0 0 14px ${hexToRgba(GOLD, 0.08)}`,
-                }}
-                aria-label="Open color theme menu"
-              >
-                <Box sx={{ width: 9, height: 9, borderRadius: '50%', background: GOLD, boxShadow: `0 0 10px ${hexToRgba(GOLD, 0.9)}` }} />
-              </Box>
-
-              <IconButton onClick={() => setMobileOpen(!mobileOpen)} sx={{ color: OFFWHITE }} aria-label="menu">
-                <Box sx={{
-                  width: 22, height: 14, position: 'relative',
-                  '&:before, &:after': {
-                    content: '""', position: 'absolute', left: 0, width: '100%', height: '1px',
-                    background: GOLD, transition: 'transform .4s cubic-bezier(.22,1,.36,1)',
-                  },
-                  '&:before': { top: mobileOpen ? 6 : 0, transform: mobileOpen ? 'rotate(45deg)' : 'none' },
-                  '&:after': { bottom: mobileOpen ? 7 : 0, transform: mobileOpen ? 'rotate(-45deg)' : 'none' },
-                }} />
-              </IconButton>
-            </Stack>
+            <IconButton onClick={() => setMobileOpen(!mobileOpen)} sx={{ color: OFFWHITE }} aria-label="menu">
+              <Box sx={{
+                width: 22, height: 14, position: 'relative',
+                '&:before, &:after': {
+                  content: '""', position: 'absolute', left: 0, width: '100%', height: '1px',
+                  background: GOLD, transition: 'transform .4s cubic-bezier(.22,1,.36,1)',
+                },
+                '&:before': { top: mobileOpen ? 6 : 0, transform: mobileOpen ? 'rotate(45deg)' : 'none' },
+                '&:after': { bottom: mobileOpen ? 7 : 0, transform: mobileOpen ? 'rotate(-45deg)' : 'none' },
+              }} />
+            </IconButton>
           )}
-
         </Toolbar>
         {isMobile && (
           <Box sx={{
@@ -538,6 +372,22 @@ const Portfolio: React.FC = () => {
                   {n.label}
                 </Typography>
               ))}
+              <Stack direction="row" spacing={1.5} sx={{ pt: 1, alignItems: 'center' }}>
+                {Object.entries(COLOR_SCHEMES).map(([key, option]) => (
+                  <Box
+                    key={key}
+                    onClick={() => setSelectedTheme(key as keyof typeof COLOR_SCHEMES)}
+                    sx={{
+                      width: 18, height: 18, borderRadius: '50%',
+                      background: option.primary,
+                      border: selectedTheme === key ? `2px solid ${OFFWHITE}` : '1px solid rgba(255,255,255,0.35)',
+                      boxShadow: selectedTheme === key ? `0 0 20px ${hexToRgba(option.primary, 0.7)}` : 'none',
+                      cursor: 'pointer',
+                    }}
+                    aria-label={`Select ${option.name} color theme`}
+                  />
+                ))}
+              </Stack>
             </Stack>
           </Box>
         )}
@@ -588,40 +438,21 @@ const Portfolio: React.FC = () => {
                     href={`${import.meta.env.BASE_URL}Chaitanya-Ubale-Resume.pdf`}
                     download="Chaitanya-Ubale-Resume.pdf"
                     endIcon={<FileDownloadOutlinedIcon />}
-                    sx={{
-                      background: GOLD,
-                      color: OBSIDIAN,
-                      fontWeight: 700,
-                      boxShadow: `0 0 28px ${hexToRgba(GOLD, 0.4)}`,
-                      '&:hover': { background: GOLD, filter: 'brightness(1.08)' },
-                    }}
                   >
                     Download Resume
                   </Button>
-                  <Button
-                    variant="outlined"
-                    onClick={() => scrollTo('contact')}
-                    endIcon={<ArrowOutwardIcon />}
-                    sx={{
-                      borderColor: GOLD,
-                      color: GOLD,
-                      '&:hover': {
-                        borderColor: GOLD,
-                        background: hexToRgba(GOLD, 0.08),
-                      },
-                    }}
-                  >
+                  <Button variant="outlined" onClick={() => scrollTo('contact')} endIcon={<ArrowOutwardIcon />}>
                     Get in touch
                   </Button>
                   <Button variant="text" onClick={() => scrollTo('projects')}
-                    sx={{ color: OFFWHITE, opacity: 0.7, '&:hover': { color: GOLD, background: 'transparent' } }}>
+                    sx={{ color: 'rgba(238,238,238,0.6)', '&:hover': { color: GOLD, background: 'transparent' } }}>
                     View selected work
                   </Button>
                 </Stack>
               </Reveal>
             </Grid>
 
-            {/* Circular Photo with subtle background layer */}
+            {/* Circular Photo */}
             <Grid size={{ xs: 12, md: 4 }}>
               <Reveal delay={400}>
                 <Box sx={{
@@ -632,16 +463,6 @@ const Portfolio: React.FC = () => {
                   mx: { xs: 'auto', md: 0 },
                   ml: { md: 'auto' },
                 }}>
-                  <Box sx={{
-                    position: 'absolute',
-                    inset: '-18% -12% -18% -12%',
-                    borderRadius: '50%',
-                    background: `url(${profilePhoto}) center/cover no-repeat`,
-                    opacity: 0.12,
-                    filter: 'blur(8px) saturate(0.8)',
-                    transform: 'scale(1.18)',
-                  }} />
-
                   {/* Outer rotating gold ring */}
                   <Box sx={{
                     position: 'absolute', inset: -14, borderRadius: '50%',
@@ -725,7 +546,7 @@ const Portfolio: React.FC = () => {
       {/* ABOUT */}
       <Box id="about" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 } }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="01" title="About" accent={GOLD} text={OFFWHITE} /></Reveal>
+          <Reveal><SectionLabel index="01" title="About" /></Reveal>
           <Grid container spacing={{ xs: 4, md: 10 }}>
             <Grid size={{ xs: 12, md: 4 }}>
               <Reveal>
@@ -763,7 +584,7 @@ const Portfolio: React.FC = () => {
       {/* SKILLS */}
       <Box id="skills" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: SURFACE }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="02" title="Core Skills" accent={GOLD} text={OFFWHITE} /></Reveal>
+          <Reveal><SectionLabel index="02" title="Core Skills" /></Reveal>
           <Reveal delay={100}>
             <Typography sx={{ fontSize: { xs: '1.8rem', md: '3rem' }, fontWeight: 500, letterSpacing: '-0.03em', mb: { xs: 6, md: 10 }, maxWidth: 820, lineHeight: 1.1 }}>
               A stack tuned for <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>reliability</Box> at scale.
@@ -821,7 +642,7 @@ const Portfolio: React.FC = () => {
       {/* BANKING PARTNERS */}
       <Box id="partners" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: SURFACE }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="03" title="Banking Partners" accent={GOLD} text={OFFWHITE} /></Reveal>
+          <Reveal><SectionLabel index="03" title="Banking Partners" /></Reveal>
           <Reveal delay={100}>
             <Typography sx={{ fontSize: { xs: '1.8rem', md: '3rem' }, fontWeight: 500, letterSpacing: '-0.03em', mb: { xs: 6, md: 10 }, maxWidth: 820, lineHeight: 1.1 }}>
               Financial infrastructure <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>built on bank APIs.</Box>
@@ -881,7 +702,7 @@ const Portfolio: React.FC = () => {
       {/* EXPERIENCE */}
       <Box id="experience" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 } }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="04" title="Professional Experience" accent={GOLD} text={OFFWHITE} /></Reveal>
+          <Reveal><SectionLabel index="04" title="Professional Experience" /></Reveal>
           <Stack spacing={{ xs: 6, md: 8 }}>
             {EXPERIENCE.map((e, i) => (
               <Reveal key={i} delay={i * 80}>
@@ -917,7 +738,7 @@ const Portfolio: React.FC = () => {
       {/* PROJECTS — distinct from Experience */}
       <Box id="projects" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: SURFACE }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="05" title="Technical Projects" accent={GOLD} text={OFFWHITE} /></Reveal>
+          <Reveal><SectionLabel index="05" title="Technical Projects" /></Reveal>
           <Reveal delay={100}>
             <Typography sx={{ fontSize: { xs: '1.8rem', md: '3rem' }, fontWeight: 500, letterSpacing: '-0.03em', mb: { xs: 6, md: 10 }, maxWidth: 820, lineHeight: 1.1 }}>
               Selected <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>case studies.</Box>
@@ -971,7 +792,7 @@ const Portfolio: React.FC = () => {
       {/* AWARDS */}
       <Box id="awards" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 } }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="06" title="Achievements & Awards" accent={GOLD} text={OFFWHITE} /></Reveal>
+          <Reveal><SectionLabel index="06" title="Achievements & Awards" /></Reveal>
           <Reveal delay={100}>
             <Typography sx={{ fontSize: { xs: '1.6rem', md: '2.6rem' }, fontWeight: 500, letterSpacing: '-0.025em', mb: { xs: 6, md: 8 } }}>
               Recognized for <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>quality.</Box>
@@ -1041,7 +862,7 @@ const Portfolio: React.FC = () => {
       {/* ACTIVITIES + COMMUNITY */}
       <Box sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: SURFACE }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="07" title="Activities & Honors" accent={GOLD} text={OFFWHITE} /></Reveal>
+          <Reveal><SectionLabel index="07" title="Activities & Honors" /></Reveal>
           <Grid container spacing={{ xs: 5, md: 8 }} alignItems="center">
             <Grid size={{ xs: 12, md: 6 }}>
               <Reveal>
@@ -1081,7 +902,7 @@ const Portfolio: React.FC = () => {
       {/* CERTIFICATIONS + EDUCATION */}
       <Box sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 } }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="08" title="Certifications & Education" accent={GOLD} text={OFFWHITE} /></Reveal>
+          <Reveal><SectionLabel index="08" title="Certifications & Education" /></Reveal>
           <Grid container spacing={{ xs: 5, md: 8 }}>
             <Grid size={{ xs: 12, md: 6 }}>
               <Reveal>
@@ -1121,7 +942,7 @@ const Portfolio: React.FC = () => {
       {/* PUBLICATIONS */}
       <Box id="publications" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 } }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="09" title="Publications" accent={GOLD} text={OFFWHITE} /></Reveal>
+          <Reveal><SectionLabel index="09" title="Publications" /></Reveal>
           <Reveal delay={100}>
             <Typography sx={{ fontSize: { xs: '1.6rem', md: '2.6rem' }, fontWeight: 500, letterSpacing: '-0.025em', mb: { xs: 6, md: 8 } }}>
               Published <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>research.</Box>
@@ -1165,7 +986,7 @@ const Portfolio: React.FC = () => {
       {/* CONTACT */}
       <Box id="contact" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: SURFACE }}>
         <Container maxWidth="md">
-          <Reveal><SectionLabel index="10" title="Get In Touch" accent={GOLD} text={OFFWHITE} /></Reveal>
+          <Reveal><SectionLabel index="10" title="Get In Touch" /></Reveal>
           <Reveal delay={120}>
             <Typography sx={{ fontSize: { xs: '2.2rem', md: '4rem' }, fontWeight: 500, letterSpacing: '-0.035em', lineHeight: 1.05, mb: { xs: 5, md: 8 } }}>
               Let’s build something
@@ -1190,18 +1011,7 @@ const Portfolio: React.FC = () => {
                 </Grid>
                 <TextField fullWidth label="Tell me about the project" variant="outlined" multiline minRows={4} />
                 <Box>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    endIcon={<ArrowOutwardIcon />}
-                    sx={{
-                      background: GOLD,
-                      color: OBSIDIAN,
-                      fontWeight: 700,
-                      boxShadow: `0 0 28px ${hexToRgba(GOLD, 0.4)}`,
-                      '&:hover': { background: GOLD, filter: 'brightness(1.08)' },
-                    }}
-                  >
+                  <Button type="submit" variant="contained" endIcon={<ArrowOutwardIcon />}>
                     Send message
                   </Button>
                 </Box>
@@ -1283,8 +1093,7 @@ const Portfolio: React.FC = () => {
           </Stack>
         </Container>
       </Box>
-      </Box>
-    </ThemeProvider>
+    </Box>
   );
 };
 
