@@ -248,11 +248,11 @@ const PUBLICATIONS = [
   },
 ];
 
-const SectionLabel: React.FC<{ index: string; title: string }> = ({ index, title }) => (
+const SectionLabel: React.FC<{ index: string; title: string; accent: string; text: string }> = ({ index, title, accent, text }) => (
   <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: { xs: 5, md: 8 } }}>
-    <Typography variant="caption" sx={{ color: GOLD }}>{index}</Typography>
-    <Box sx={{ height: '1px', width: 48, background: hexToRgba(GOLD, 0.5) }} />
-    <Typography variant="caption" sx={{ color: OFFWHITE, opacity: 0.7 }}>{title}</Typography>
+    <Typography variant="caption" sx={{ color: accent }}>{index}</Typography>
+    <Box sx={{ height: '1px', width: 48, background: hexToRgba(accent, 0.5) }} />
+    <Typography variant="caption" sx={{ color: text, opacity: 0.7 }}>{title}</Typography>
   </Stack>
 );
 
@@ -546,7 +546,7 @@ const Portfolio: React.FC = () => {
       {/* ABOUT */}
       <Box id="about" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 } }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="01" title="About" /></Reveal>
+          <Reveal><SectionLabel index="01" title="About" accent={GOLD} text={OFFWHITE} /></Reveal>
           <Grid container spacing={{ xs: 4, md: 10 }}>
             <Grid size={{ xs: 12, md: 4 }}>
               <Reveal>
@@ -584,7 +584,7 @@ const Portfolio: React.FC = () => {
       {/* SKILLS */}
       <Box id="skills" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: SURFACE }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="02" title="Core Skills" /></Reveal>
+          <Reveal><SectionLabel index="02" title="Core Skills" accent={GOLD} text={OFFWHITE} /></Reveal>
           <Reveal delay={100}>
             <Typography sx={{ fontSize: { xs: '1.8rem', md: '3rem' }, fontWeight: 500, letterSpacing: '-0.03em', mb: { xs: 6, md: 10 }, maxWidth: 820, lineHeight: 1.1 }}>
               A stack tuned for <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>reliability</Box> at scale.
@@ -642,7 +642,7 @@ const Portfolio: React.FC = () => {
       {/* BANKING PARTNERS */}
       <Box id="partners" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: SURFACE }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="03" title="Banking Partners" /></Reveal>
+          <Reveal><SectionLabel index="03" title="Banking Partners" accent={GOLD} text={OFFWHITE} /></Reveal>
           <Reveal delay={100}>
             <Typography sx={{ fontSize: { xs: '1.8rem', md: '3rem' }, fontWeight: 500, letterSpacing: '-0.03em', mb: { xs: 6, md: 10 }, maxWidth: 820, lineHeight: 1.1 }}>
               Financial infrastructure <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>built on bank APIs.</Box>
@@ -702,7 +702,7 @@ const Portfolio: React.FC = () => {
       {/* EXPERIENCE */}
       <Box id="experience" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 } }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="04" title="Professional Experience" /></Reveal>
+          <Reveal><SectionLabel index="04" title="Professional Experience" accent={GOLD} text={OFFWHITE} /></Reveal>
           <Stack spacing={{ xs: 6, md: 8 }}>
             {EXPERIENCE.map((e, i) => (
               <Reveal key={i} delay={i * 80}>
@@ -738,7 +738,7 @@ const Portfolio: React.FC = () => {
       {/* PROJECTS — distinct from Experience */}
       <Box id="projects" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: SURFACE }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="05" title="Technical Projects" /></Reveal>
+          <Reveal><SectionLabel index="05" title="Technical Projects" accent={GOLD} text={OFFWHITE} /></Reveal>
           <Reveal delay={100}>
             <Typography sx={{ fontSize: { xs: '1.8rem', md: '3rem' }, fontWeight: 500, letterSpacing: '-0.03em', mb: { xs: 6, md: 10 }, maxWidth: 820, lineHeight: 1.1 }}>
               Selected <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>case studies.</Box>
@@ -792,7 +792,7 @@ const Portfolio: React.FC = () => {
       {/* AWARDS */}
       <Box id="awards" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 } }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="06" title="Achievements & Awards" /></Reveal>
+          <Reveal><SectionLabel index="06" title="Achievements & Awards" accent={GOLD} text={OFFWHITE} /></Reveal>
           <Reveal delay={100}>
             <Typography sx={{ fontSize: { xs: '1.6rem', md: '2.6rem' }, fontWeight: 500, letterSpacing: '-0.025em', mb: { xs: 6, md: 8 } }}>
               Recognized for <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>quality.</Box>
@@ -862,7 +862,7 @@ const Portfolio: React.FC = () => {
       {/* ACTIVITIES + COMMUNITY */}
       <Box sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: SURFACE }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="07" title="Activities & Honors" /></Reveal>
+          <Reveal><SectionLabel index="07" title="Activities & Honors" accent={GOLD} text={OFFWHITE} /></Reveal>
           <Grid container spacing={{ xs: 5, md: 8 }} alignItems="center">
             <Grid size={{ xs: 12, md: 6 }}>
               <Reveal>
@@ -902,7 +902,7 @@ const Portfolio: React.FC = () => {
       {/* CERTIFICATIONS + EDUCATION */}
       <Box sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 } }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="08" title="Certifications & Education" /></Reveal>
+          <Reveal><SectionLabel index="08" title="Certifications & Education" accent={GOLD} text={OFFWHITE} /></Reveal>
           <Grid container spacing={{ xs: 5, md: 8 }}>
             <Grid size={{ xs: 12, md: 6 }}>
               <Reveal>
@@ -942,7 +942,7 @@ const Portfolio: React.FC = () => {
       {/* PUBLICATIONS */}
       <Box id="publications" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 } }}>
         <Container maxWidth="lg">
-          <Reveal><SectionLabel index="09" title="Publications" /></Reveal>
+          <Reveal><SectionLabel index="09" title="Publications" accent={GOLD} text={OFFWHITE} /></Reveal>
           <Reveal delay={100}>
             <Typography sx={{ fontSize: { xs: '1.6rem', md: '2.6rem' }, fontWeight: 500, letterSpacing: '-0.025em', mb: { xs: 6, md: 8 } }}>
               Published <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>research.</Box>
@@ -986,7 +986,7 @@ const Portfolio: React.FC = () => {
       {/* CONTACT */}
       <Box id="contact" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: SURFACE }}>
         <Container maxWidth="md">
-          <Reveal><SectionLabel index="10" title="Get In Touch" /></Reveal>
+          <Reveal><SectionLabel index="10" title="Get In Touch" accent={GOLD} text={OFFWHITE} /></Reveal>
           <Reveal delay={120}>
             <Typography sx={{ fontSize: { xs: '2.2rem', md: '4rem' }, fontWeight: 500, letterSpacing: '-0.035em', lineHeight: 1.05, mb: { xs: 5, md: 8 } }}>
               Let’s build something
