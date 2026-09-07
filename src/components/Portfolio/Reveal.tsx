@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Box, BoxProps } from '@mui/material';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 interface RevealProps extends BoxProps {
   delay?: number;
@@ -8,9 +9,14 @@ interface RevealProps extends BoxProps {
 
 const Reveal: React.FC<RevealProps> = ({ children, delay = 0, y = 40, sx, ...rest }) => {
   const ref = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    if (reducedMotion) {
+      setVisible(true);
+      return;
+    }
     const el = ref.current;
     if (!el) return;
     const obs = new IntersectionObserver(
@@ -24,16 +30,18 @@ const Reveal: React.FC<RevealProps> = ({ children, delay = 0, y = 40, sx, ...res
     );
     obs.observe(el);
     return () => obs.disconnect();
-  }, []);
+  }, [reducedMotion]);
 
   return (
     <Box
       ref={ref}
       sx={{
         opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : `translateY(${y}px)`,
-        transition: `opacity 1.1s cubic-bezier(.22,1,.36,1) ${delay}ms, transform 1.1s cubic-bezier(.22,1,.36,1) ${delay}ms`,
-        willChange: 'opacity, transform',
+        transform: reducedMotion || visible ? 'translateY(0)' : `translateY(${y}px)`,
+        transition: reducedMotion
+          ? 'none'
+          : `opacity 1.1s cubic-bezier(.22,1,.36,1) ${delay}ms, transform 1.1s cubic-bezier(.22,1,.36,1) ${delay}ms`,
+        willChange: reducedMotion ? 'auto' : 'opacity, transform',
         ...sx,
       }}
       {...rest}
