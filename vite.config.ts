@@ -19,4 +19,16 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        // Split heavy vendors into their own long-cached chunks.
+        manualChunks: {
+          react: ["react", "react-dom", "react-router-dom"],
+          mui: ["@mui/material", "@mui/icons-material", "@emotion/react", "@emotion/styled"],
+          motion: ["framer-motion", "lenis"],
+        },
+      },
+    },
+  },
 }));

@@ -1,16 +1,17 @@
 import { createTheme } from '@mui/material/styles';
+import { palette } from './palette';
 
-const OBSIDIAN = '#0B0C10';
-const OBSIDIAN_2 = '#121419';
-const GOLD = '#C5A059';
-const GOLD_SOFT = '#D9BE85';
-const OFFWHITE = '#EEEEEE';
-const MUTED = '#8A8A8A';
+const OBSIDIAN = palette.obsidian;
+const OBSIDIAN_2 = palette.obsidianPaper;
+const GOLD = palette.gold;
+const GOLD_SOFT = palette.goldSoft;
+const OFFWHITE = palette.offWhite;
+const MUTED = palette.muted;
 
 const muiTheme = createTheme({
   palette: {
     mode: 'dark',
-    primary: { main: GOLD, light: GOLD_SOFT, dark: '#9C7E40', contrastText: OBSIDIAN },
+    primary: { main: GOLD, light: GOLD_SOFT, dark: palette.goldDark, contrastText: OBSIDIAN },
     secondary: { main: OFFWHITE },
     background: { default: OBSIDIAN, paper: OBSIDIAN_2 },
     text: { primary: OFFWHITE, secondary: MUTED },
@@ -58,6 +59,17 @@ const muiTheme = createTheme({
           letterSpacing: '0.08em',
           textTransform: 'uppercase',
           transition: 'all .45s cubic-bezier(.22,1,.36,1)',
+          '& .MuiButton-endIcon': {
+            transition: 'transform .4s cubic-bezier(.22,1,.36,1)',
+          },
+          '&:hover .MuiButton-endIcon': {
+            transform: 'translate(3px, -3px)',
+          },
+          '@media (prefers-reduced-motion: reduce)': {
+            transition: 'none',
+            '& .MuiButton-endIcon': { transition: 'none' },
+            '&:hover .MuiButton-endIcon': { transform: 'none' },
+          },
         },
         outlined: {
           borderColor: 'rgba(197,160,89,0.4)',
