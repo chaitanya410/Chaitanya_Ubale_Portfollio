@@ -18,46 +18,49 @@ A fast, single-page personal portfolio for Chaitanya Ubale (Software Developer �
 - **Build:** Vite 5, `@vitejs/plugin-react-swc` (SWC transform, no type-check in build)
 - **Language:** TypeScript 5 (loose config — `strict: false`)
 - **UI:** React 18, MUI 7 (`@mui/material`, `@emotion`) for the portfolio page; Tailwind 3 + shadcn-ui primitives (`src/components/ui/*`) available and used by the 404 page
+- **Motion:** `framer-motion` (reveals, parallax, heading masks, diagrams), `lenis` (smooth scroll)
+- **Forms:** `react-hook-form` + `zod`; contact submissions via Web3Forms (`VITE_WEB3FORMS_KEY`) with a `mailto:` fallback
 - **Routing:** `react-router-dom` 6 (`BrowserRouter`, `basename` from `import.meta.env.BASE_URL`)
 - **Data layer:** `@tanstack/react-query` provider is mounted but currently unused (no network calls)
-- **Testing:** Vitest 3 + jsdom + `@testing-library/react`
-- **Hosting:** GitHub Pages via GitHub Actions (Node 20)
+- **Testing:** Vitest 3 + jsdom + `@testing-library/react` + `@testing-library/dom`
+- **Hosting:** GitHub Pages via GitHub Actions (Node 20); `vite.config.ts` splits `react` / `mui` / `motion` vendor chunks
 
 ## 4. Functional requirements
 
-### 4.1 Page structure (`src/components/Portfolio/Portfolio.tsx`)
+### 4.1 Page structure
 
-Single scrolling page with anchored sections, in order:
+`Portfolio.tsx` is the composition root; larger sections are extracted to `src/components/Portfolio/sections/` (`Nav`, `Stats`, `Partners`, `Projects`, `ContactForm`). Single scrolling page with anchored sections, in order:
 
 1. **Hero** — name, title, primary CTAs (view work, download resume), background image.
 2. **About** — bio, location, headline stats (`STATS`: years of experience, weekly volume automated, customers served, banking partners integrated).
 3. **Skills** — grouped skill chips (`SKILL_GROUPS`: Backend & Databases, Frontend, Cloud, AI & ML, AI Tools & Productivity).
 4. **Banking Partners** — cards per bank (`BANKING_PARTNERS`: ICICI, HDFC, SBM, RBL, Standard Chartered) with logo, description, service tags.
 5. **Experience** — reverse-chronological roles (`EXPERIENCE`): period, role, company, bullet points.
-6. **Projects** — selected work entries.
+6. **Projects** — the 3 `featured` fintech projects render as full-width alternating feature rows (generated `ProjectDiagram` SVG + `metric` callout); the rest render as a grid under "More work".
 7. **Awards** — award entries with imagery (`award-gold.jpg`, `award-silver.jpg`).
 8. **Publications** — external links to published papers (e.g. IRJET).
 9. **Contact** — email, phone, LinkedIn, location.
 
-### 4.2 Navigation
+### 4.2 Navigation (`sections/Nav.tsx`)
 
-- Fixed top nav listing the section IDs in `NAV`; clicking scrolls to the anchor (`scrollBehavior: smooth`).
-- Nav changes appearance once the page is scrolled (`scrolled` state).
-- On viewports below the MUI `md` breakpoint, the nav collapses into a toggle-able drawer (`mobileOpen` state); `src/hooks/use-mobile.tsx` is not used by the live page — breakpoint detection is via MUI `useMediaQuery`.
+- Fixed top nav listing the section IDs in `NAV`; items are real `<a href="#id">` links, `scrollToId()` routes the scroll through Lenis.
+- Active section highlights via `useScrollSpy`; a 2px progress bar tracks scroll depth; underline-draw on hover/active.
+- Nav gains a blurred background once the page is scrolled.
+- Below the MUI `md` breakpoint the nav collapses into a toggle-able drawer.
 
-### 4.3 Color-scheme switcher
+### 4.3 Single palette
 
-- User can switch the accent palette at runtime between 5 schemes in `COLOR_SCHEMES` (`gold` default, plus `emerald`, `cyan`, `violet`, `rose`).
-- State is component-local (`selectedTheme` in `Portfolio`); not persisted across reloads.
-- Applied via inline styles and the `hexToRgba(hex, alpha)` helper, layered over the static MUI theme in `src/theme/muiTheme.ts`.
+- One committed identity (gold / obsidian) defined in `src/theme/palette.ts`; `muiTheme.ts` reads from it. The former runtime multi-scheme switcher has been removed.
 
 ### 4.4 Resume download
 
-- A "Download Resume" action serves `public/Chaitanya-Ubale-Resume.pdf`. Updating the résumé = replacing that file.
+- A "Download Resume" action (a magnetic button) serves `public/Chaitanya-Ubale-Resume.pdf`. Updating the résumé = replacing that file.
 
-### 4.5 Reveal-on-scroll
+### 4.5 Motion system
 
-- `src/components/Portfolio/Reveal.tsx` wraps content blocks to animate them into view on scroll.
+- `framer-motion` drives all reveals, the hero parallax (content vs. background), Ken-Burns drift, word-by-word heading masks (`AnimatedHeading`), staggered card groups, and the `ProjectDiagram` line-draw.
+- `lenis` provides inertial smooth scrolling (`useSmoothScroll`, mounted in `Index.tsx`).
+- **Every animation gates on `useReducedMotion()`**; with `prefers-reduced-motion: reduce`, Lenis is not initialised, reveals render immediately, the logo ribbon and Ken-Burns stop, and a global CSS safety net in `index.css` neutralises transitions/animations.
 
 ### 4.6 Routing / 404
 
@@ -66,7 +69,7 @@ Single scrolling page with anchored sections, in order:
 
 ### 4.7 Content editing model
 
-- All human-authored copy lives in `const` arrays/objects at the top of `Portfolio.tsx`. No JSX edits are needed to change text, links, stats, skills, experience, partners, or projects.
+- All human-authored copy lives in `src/content/portfolio.ts` (`const` arrays + typed interfaces). No JSX edits are needed to change text, links, stats, skills, experience, partners, or projects. `GITHUB_URL` there is a placeholder.
 - Structured metadata (Person schema, OpenGraph, Twitter card, keywords, description) lives in `index.html`.
 
 ## 5. Non-functional requirements
@@ -75,9 +78,9 @@ Single scrolling page with anchored sections, in order:
 |------|-------------|
 | **SEO** | `index.html` carries title, meta description, keywords, canonical author, `robots: index, follow`, and JSON-LD `Person` schema. Keep these in sync with on-page content. |
 | **Social** | OpenGraph + Twitter card tags with `professional-photo.jpg` preview image. |
-| **Performance** | Single bundle, SWC build, Google Fonts (`Space Grotesk`, `Inter`) preconnected and loaded in `index.html`. HMR overlay disabled in dev. |
+| **Performance** | SWC build; `react` / `mui` / `motion` split into separate vendor chunks (~90 KB gz app chunk, ~260 KB gz total). Google Fonts (`Space Grotesk`, `Inter`) preconnected in `index.html`. HMR overlay disabled in dev. |
 | **Responsiveness** | Layout must work from small mobile up; MUI `md` breakpoint is the mobile/desktop divide for navigation. |
-| **Accessibility** | Semantic headings per section, keyboard-reachable nav and CTAs, sufficient contrast in every color scheme. |
+| **Accessibility** | One `<h1>` (hero), `<h2>` per section (`SectionLabel`), `<h3>` for cards/rows; keyboard-reachable nav/CTAs with focus rings; email/phone are links; all motion respects `prefers-reduced-motion`. |
 | **Browser support** | Modern evergreen browsers (ES2020 target). |
 
 ## 6. Build & deployment
@@ -90,9 +93,9 @@ Single scrolling page with anchored sections, in order:
 ## 7. Testing
 
 - Test glob: `src/**/*.{test,spec}.{ts,tsx}`.
-- Global setup: `src/test/setup.ts` imports `@testing-library/jest-dom` and mocks `window.matchMedia`.
+- Global setup: `src/test/setup.ts` imports `@testing-library/jest-dom` and mocks `window.matchMedia` + `IntersectionObserver`.
 - `globals: true` — `describe`/`it`/`expect` need no import.
-- Current coverage: placeholder only (`src/test/example.test.ts`).
+- Coverage: `src/lib/formatStat.test.ts` (helpers) and `src/components/Portfolio/Portfolio.test.tsx` (render smoke test).
 
 ## 8. Known constraints / debt
 
@@ -101,3 +104,6 @@ Single scrolling page with anchored sections, in order:
 - `react-query` provider is mounted with no queries.
 - `bun.lockb` and `package-lock.json` are both committed; npm is authoritative.
 - Base path is not environment-driven despite README wording.
+- `framer-motion` is imported whole (no `LazyMotion`); the `motion` vendor chunk is ~45 KB gz.
+- `GITHUB_URL` and `VITE_WEB3FORMS_KEY` are unset placeholders.
+- Project feature-row diagrams are schematic SVGs, not real screenshots.
