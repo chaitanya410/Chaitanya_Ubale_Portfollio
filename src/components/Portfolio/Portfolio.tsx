@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   Box, Container, Typography, Stack, Button, IconButton,
   Grid, Divider,
 } from '@mui/material';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
@@ -22,12 +23,17 @@ import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import Reveal from './Reveal';
 import Nav from './sections/Nav';
 import Stats from './sections/Stats';
+import Partners from './sections/Partners';
+import Projects from './sections/Projects';
 import ContactForm from './sections/ContactForm';
+import SectionLabel from './SectionLabel';
+import AnimatedHeading from './AnimatedHeading';
+import MagneticButton from './MagneticButton';
 import { palette, hexToRgba } from '../../theme/palette';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { scrollToId } from '../../lib/scroll';
 import {
-  SKILL_GROUPS, BANKING_PARTNERS, EXPERIENCE, PROJECTS, AWARDS,
+  SKILL_GROUPS, EXPERIENCE, AWARDS,
   ACTIVITIES, CERTS, EDUCATION, PUBLICATIONS, CONTACT, communityImg,
   type SkillIconKey,
 } from '../../content/portfolio';
@@ -37,6 +43,9 @@ import profilePhoto from '../../assets/profile-photo.jpg';
 
 const { gold: GOLD, obsidian: OBSIDIAN, offWhite: OFFWHITE, surface: SURFACE } = palette;
 
+const GRAIN =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E\")";
+
 const SKILL_ICONS: Record<SkillIconKey, React.ReactNode> = {
   storage: <StorageOutlinedIcon />,
   code: <CodeOutlinedIcon />,
@@ -45,136 +54,156 @@ const SKILL_ICONS: Record<SkillIconKey, React.ReactNode> = {
   'ai-tools': <SmartToyOutlinedIcon />,
 };
 
-const SectionLabel: React.FC<{ index: string; title: string }> = ({ index, title }) => (
-  <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: { xs: 5, md: 8 } }}>
-    <Typography variant="caption" sx={{ color: GOLD }}>{index}</Typography>
-    <Box sx={{ height: '1px', width: 48, background: hexToRgba(GOLD, 0.5) }} />
-    <Typography component="h2" variant="caption" sx={{ color: OFFWHITE, opacity: 0.7, m: 0 }}>{title}</Typography>
-  </Stack>
-);
-
 const Portfolio: React.FC = () => {
   const reducedMotion = useReducedMotion();
   const go = (id: string) => scrollToId(id, reducedMotion);
+
+  const heroRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
+  const textY = useTransform(scrollYProgress, [0, 1], [0, 140]);
+  const bgY = useTransform(scrollYProgress, [0, 1], [0, 90]);
 
   return (
     <Box sx={{ background: OBSIDIAN, color: OFFWHITE, overflowX: 'hidden' }}>
       <Nav />
 
       {/* HERO */}
-      <Box id="hero" sx={{
-        minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'center',
-        px: { xs: 3, md: 8 }, pt: { xs: 14, md: 0 },
-        backgroundImage: `linear-gradient(180deg, rgba(11,12,16,0.55) 0%, rgba(11,12,16,0.9) 70%, ${OBSIDIAN} 100%), url(${heroImg})`,
-        backgroundSize: 'cover', backgroundPosition: 'center bottom',
-      }}>
-        <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
-          <Grid container spacing={{ xs: 6, md: 8 }} alignItems="center">
-            <Grid size={{ xs: 12, md: 8 }}>
-              <Reveal delay={150}>
-                <Typography variant="caption" sx={{ mb: 3, display: 'block' }}>
-                  Pune, India — Software Developer
-                </Typography>
-              </Reveal>
-              <Reveal delay={300} y={60}>
-                <Typography component="h1" sx={{
-                  fontSize: { xs: '2.6rem', sm: '4rem', md: '5.6rem', lg: '6.4rem' },
-                  fontWeight: 600, letterSpacing: '-0.045em', lineHeight: 0.98,
-                  color: OFFWHITE, mb: { xs: 2, md: 3 },
-                }}>
-                  Chaitanya
-                  <br />
-                  <Box component="span" sx={{ color: GOLD, fontStyle: 'italic', fontWeight: 400 }}>
-                    Ubale.
-                  </Box>
-                </Typography>
-              </Reveal>
-              <Reveal delay={500}>
-                <Typography sx={{
-                  fontSize: { xs: '1rem', md: '1.3rem' },
-                  color: 'rgba(238,238,238,0.78)', fontWeight: 300,
-                  maxWidth: 580, lineHeight: 1.55, letterSpacing: '-0.01em',
-                }}>
-                  Delivering scalable, secure, and highly configurable applications end-to-end.
-                </Typography>
-              </Reveal>
-              <Reveal delay={700}>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mt: { xs: 5, md: 7 } }}>
-                  <Button
-                    variant="contained"
-                    component="a"
-                    href={`${import.meta.env.BASE_URL}Chaitanya-Ubale-Resume.pdf`}
-                    download="Chaitanya-Ubale-Resume.pdf"
-                    endIcon={<FileDownloadOutlinedIcon />}
-                  >
-                    Download Resume
-                  </Button>
-                  <Button variant="outlined" onClick={() => go('contact')} endIcon={<ArrowOutwardIcon />}>
-                    Get in touch
-                  </Button>
-                  <Button variant="text" onClick={() => go('projects')}
-                    sx={{ color: 'rgba(238,238,238,0.6)', '&:hover': { color: GOLD, background: 'transparent' } }}>
-                    View selected work
-                  </Button>
-                </Stack>
-              </Reveal>
-            </Grid>
+      <Box
+        id="hero"
+        ref={heroRef}
+        sx={{
+          minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'center',
+          px: { xs: 3, md: 8 }, pt: { xs: 14, md: 0 }, overflow: 'hidden',
+        }}
+      >
+        {/* Parallax + Ken-Burns background */}
+        <motion.div
+          aria-hidden
+          style={{
+            position: 'absolute', left: 0, right: 0, top: '-6%', bottom: '-6%',
+            ...(reducedMotion ? {} : { y: bgY }),
+          }}
+        >
+          <Box sx={{
+            position: 'absolute', inset: 0,
+            backgroundImage: `url(${heroImg})`, backgroundSize: 'cover', backgroundPosition: 'center bottom',
+            animation: reducedMotion ? 'none' : 'kenburns 26s ease-in-out infinite alternate',
+            '@keyframes kenburns': { from: { transform: 'scale(1.04)' }, to: { transform: 'scale(1.13)' } },
+          }} />
+        </motion.div>
+        {/* Legibility gradient */}
+        <Box aria-hidden sx={{
+          position: 'absolute', inset: 0,
+          backgroundImage: `linear-gradient(180deg, rgba(11,12,16,0.55) 0%, rgba(11,12,16,0.9) 70%, ${OBSIDIAN} 100%)`,
+        }} />
+        {/* Film grain */}
+        <Box aria-hidden sx={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          opacity: 0.09, mixBlendMode: 'overlay', backgroundImage: GRAIN, backgroundSize: '140px 140px',
+        }} />
 
-            {/* Circular Photo */}
-            <Grid size={{ xs: 12, md: 4 }}>
-              <Reveal delay={400}>
-                <Box sx={{
-                  position: 'relative',
-                  width: { xs: 200, sm: 240, md: '100%' },
-                  maxWidth: 320,
-                  aspectRatio: '1 / 1',
-                  mx: { xs: 'auto', md: 0 },
-                  ml: { md: 'auto' },
-                }}>
-                  {/* Outer rotating gold ring */}
+        <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
+          <motion.div style={reducedMotion ? undefined : { y: textY }}>
+            <Grid container spacing={{ xs: 6, md: 8 }} alignItems="center">
+              <Grid size={{ xs: 12, md: 8 }}>
+                <Reveal delay={150}>
+                  <Typography variant="caption" sx={{ mb: 3, display: 'block' }}>
+                    Pune, India — Software Developer
+                  </Typography>
+                </Reveal>
+                <AnimatedHeading
+                  component="h1"
+                  parts={['Chaitanya\n', { accent: 'Ubale.' }]}
+                  stagger={0.08}
+                  sx={{
+                    fontSize: { xs: '2.6rem', sm: '4rem', md: '5.6rem', lg: '6.4rem' },
+                    fontWeight: 600, letterSpacing: '-0.045em', lineHeight: 0.98,
+                    color: OFFWHITE, mb: { xs: 2, md: 3 },
+                  }}
+                />
+                <Reveal delay={500}>
+                  <Typography sx={{
+                    fontSize: { xs: '1rem', md: '1.3rem' },
+                    color: 'rgba(238,238,238,0.78)', fontWeight: 300,
+                    maxWidth: 580, lineHeight: 1.55, letterSpacing: '-0.01em',
+                  }}>
+                    Delivering scalable, secure, and highly configurable applications end-to-end.
+                  </Typography>
+                </Reveal>
+                <Reveal delay={700}>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mt: { xs: 5, md: 7 } }}>
+                    <MagneticButton
+                      variant="contained"
+                      component="a"
+                      href={`${import.meta.env.BASE_URL}Chaitanya-Ubale-Resume.pdf`}
+                      download="Chaitanya-Ubale-Resume.pdf"
+                      endIcon={<FileDownloadOutlinedIcon />}
+                    >
+                      Download Resume
+                    </MagneticButton>
+                    <Button variant="outlined" onClick={() => go('contact')} endIcon={<ArrowOutwardIcon />}>
+                      Get in touch
+                    </Button>
+                    <Button variant="text" onClick={() => go('projects')}
+                      sx={{ color: 'rgba(238,238,238,0.6)', '&:hover': { color: GOLD, background: 'transparent' } }}>
+                      View selected work
+                    </Button>
+                  </Stack>
+                </Reveal>
+              </Grid>
+
+              {/* Circular Photo */}
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Reveal delay={400}>
                   <Box sx={{
-                    position: 'absolute', inset: -14, borderRadius: '50%',
-                    background: `conic-gradient(from 0deg, transparent 0deg, ${GOLD} 90deg, transparent 180deg, ${GOLD} 270deg, transparent 360deg)`,
-                    opacity: 0.55, filter: 'blur(0.5px)',
-                    animation: reducedMotion ? 'none' : 'spin 14s linear infinite',
-                    '@keyframes spin': { to: { transform: 'rotate(360deg)' } },
-                  }} />
-                  {/* Inner mask to create thin ring */}
-                  <Box sx={{
-                    position: 'absolute', inset: -8, borderRadius: '50%',
-                    background: OBSIDIAN,
-                  }} />
-                  {/* Soft halo glow */}
-                  <Box sx={{
-                    position: 'absolute', inset: -40, borderRadius: '50%',
-                    background: `radial-gradient(circle, ${hexToRgba(GOLD, 0.28)} 0%, transparent 60%)`,
-                    filter: 'blur(20px)', pointerEvents: 'none',
-                  }} />
-                  {/* Photo */}
-                  <Box
-                    component="img"
-                    src={profilePhoto}
-                    alt="Chaitanya Ubale"
-                    loading="lazy"
-                    sx={{
-                      position: 'absolute', inset: 0, width: '100%', height: '100%',
-                      borderRadius: '50%', objectFit: 'cover', objectPosition: 'center 18%',
-                      border: `1px solid ${hexToRgba(GOLD, 0.35)}`,
-                      boxShadow: `0 0 60px ${hexToRgba(GOLD, 0.25)}, inset 0 0 40px rgba(0,0,0,0.5)`,
-                      transition: reducedMotion ? 'none' : 'transform .8s cubic-bezier(.22,1,.36,1)',
-                      '&:hover': { transform: reducedMotion ? 'none' : 'scale(1.03)' },
-                    }}
-                  />
-                </Box>
-              </Reveal>
+                    position: 'relative',
+                    width: { xs: 200, sm: 240, md: '100%' },
+                    maxWidth: 320,
+                    aspectRatio: '1 / 1',
+                    mx: { xs: 'auto', md: 0 },
+                    ml: { md: 'auto' },
+                  }}>
+                    <Box sx={{
+                      position: 'absolute', inset: -14, borderRadius: '50%',
+                      background: `conic-gradient(from 0deg, transparent 0deg, ${GOLD} 90deg, transparent 180deg, ${GOLD} 270deg, transparent 360deg)`,
+                      opacity: 0.55, filter: 'blur(0.5px)',
+                      animation: reducedMotion ? 'none' : 'spin 14s linear infinite',
+                      '@keyframes spin': { to: { transform: 'rotate(360deg)' } },
+                    }} />
+                    <Box sx={{
+                      position: 'absolute', inset: -8, borderRadius: '50%',
+                      background: OBSIDIAN,
+                    }} />
+                    <Box sx={{
+                      position: 'absolute', inset: -40, borderRadius: '50%',
+                      background: `radial-gradient(circle, ${hexToRgba(GOLD, 0.28)} 0%, transparent 60%)`,
+                      filter: 'blur(20px)', pointerEvents: 'none',
+                    }} />
+                    <Box
+                      component="img"
+                      src={profilePhoto}
+                      alt="Chaitanya Ubale"
+                      loading="lazy"
+                      sx={{
+                        position: 'absolute', inset: 0, width: '100%', height: '100%',
+                        borderRadius: '50%', objectFit: 'cover', objectPosition: 'center 18%',
+                        border: `1px solid ${hexToRgba(GOLD, 0.35)}`,
+                        boxShadow: `0 0 60px ${hexToRgba(GOLD, 0.25)}, inset 0 0 40px rgba(0,0,0,0.5)`,
+                        transition: reducedMotion ? 'none' : 'transform .8s cubic-bezier(.22,1,.36,1)',
+                        '&:hover': { transform: reducedMotion ? 'none' : 'scale(1.03)' },
+                      }}
+                    />
+                  </Box>
+                </Reveal>
+              </Grid>
             </Grid>
-          </Grid>
+          </motion.div>
         </Container>
 
         <Box sx={{
           position: 'absolute', left: '50%', bottom: { xs: 24, md: 40 },
           transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column',
-          alignItems: 'center', gap: 1, color: 'rgba(238,238,238,0.5)',
+          alignItems: 'center', gap: 1, color: 'rgba(238,238,238,0.5)', zIndex: 2,
           animation: reducedMotion ? 'none' : 'floatBounce 2.4s ease-in-out infinite',
           '@keyframes floatBounce': {
             '0%,100%': { transform: 'translate(-50%, 0)' },
@@ -231,11 +260,11 @@ const Portfolio: React.FC = () => {
       <Box id="skills" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: SURFACE }}>
         <Container maxWidth="lg">
           <Reveal><SectionLabel index="02" title="Core Skills" /></Reveal>
-          <Reveal delay={100}>
-            <Typography sx={{ fontSize: { xs: '1.8rem', md: '3rem' }, fontWeight: 500, letterSpacing: '-0.03em', mb: { xs: 6, md: 10 }, maxWidth: 820, lineHeight: 1.1 }}>
-              A stack tuned for <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>reliability</Box> at scale.
-            </Typography>
-          </Reveal>
+          <AnimatedHeading
+            component="p"
+            parts={['A stack tuned for ', { accent: 'reliability' }, ' at scale.']}
+            sx={{ fontSize: { xs: '1.8rem', md: '3rem' }, fontWeight: 500, letterSpacing: '-0.03em', mb: { xs: 6, md: 10 }, maxWidth: 820, lineHeight: 1.1 }}
+          />
           <Box sx={{
             display: 'grid',
             gap: { xs: 2.5, md: 3 },
@@ -286,65 +315,7 @@ const Portfolio: React.FC = () => {
       </Box>
 
       {/* BANKING PARTNERS */}
-      <Box id="partners" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: SURFACE }}>
-        <Container maxWidth="lg">
-          <Reveal><SectionLabel index="03" title="Banking Partners" /></Reveal>
-          <Reveal delay={100}>
-            <Typography sx={{ fontSize: { xs: '1.8rem', md: '3rem' }, fontWeight: 500, letterSpacing: '-0.03em', mb: { xs: 6, md: 10 }, maxWidth: 820, lineHeight: 1.1 }}>
-              Financial infrastructure <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>built on bank APIs.</Box>
-            </Typography>
-          </Reveal>
-          <Grid container spacing={{ xs: 3, md: 4 }}>
-            {BANKING_PARTNERS.map((bank, i) => (
-              <Grid size={{ xs: 12, sm: 6, lg: 4 }} key={bank.name}>
-                <Reveal delay={i * 100}>
-                  <Box sx={{
-                    p: { xs: 3, md: 4 }, height: '100%',
-                    border: `1px solid ${hexToRgba(GOLD, 0.18)}`,
-                    background: `linear-gradient(180deg, ${hexToRgba(OBSIDIAN, 0.75)}, ${hexToRgba(OBSIDIAN, 0.96)})`,
-                    transition: reducedMotion ? 'none' : 'all .6s cubic-bezier(.22,1,.36,1)',
-                    '&:hover': {
-                      borderColor: GOLD,
-                      transform: reducedMotion ? 'none' : 'translateY(-4px)',
-                      boxShadow: `0 20px 60px rgba(0,0,0,0.4), 0 0 40px ${hexToRgba(GOLD, 0.12)}`,
-                    },
-                  }}>
-                    <Box sx={{
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      height: 120, border: `1px solid ${hexToRgba(GOLD, 0.12)}`,
-                      background: 'rgba(255,255,255,0.02)', mb: 3,
-                    }}>
-                      <Box
-                        component="img"
-                        src={bank.logo}
-                        alt={`${bank.name} logo`}
-                        loading="lazy"
-                        sx={{ maxWidth: '72%', maxHeight: 74, objectFit: 'contain', filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.18))' }}
-                      />
-                    </Box>
-                    <Typography component="h3" sx={{ fontSize: '1.45rem', fontWeight: 500, letterSpacing: '-0.015em', lineHeight: 1.2 }}>
-                      {bank.name}
-                    </Typography>
-                    <Typography variant="body1" sx={{ mt: 2, color: 'rgba(238,238,238,0.75)' }}>
-                      {bank.description}
-                    </Typography>
-                    <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mt: 3 }}>
-                      {bank.services.map((service) => (
-                        <Box key={service} sx={{
-                          px: 1.5, py: 0.6, fontSize: '0.7rem', letterSpacing: '0.05em',
-                          color: 'rgba(238,238,238,0.8)', border: '1px solid rgba(238,238,238,0.1)',
-                        }}>
-                          {service}
-                        </Box>
-                      ))}
-                    </Stack>
-                  </Box>
-                </Reveal>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
-      </Box>
+      <Partners />
 
       {/* EXPERIENCE */}
       <Box id="experience" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 } }}>
@@ -383,68 +354,17 @@ const Portfolio: React.FC = () => {
       </Box>
 
       {/* PROJECTS */}
-      <Box id="projects" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: SURFACE }}>
-        <Container maxWidth="lg">
-          <Reveal><SectionLabel index="05" title="Technical Projects" /></Reveal>
-          <Reveal delay={100}>
-            <Typography sx={{ fontSize: { xs: '1.8rem', md: '3rem' }, fontWeight: 500, letterSpacing: '-0.03em', mb: { xs: 6, md: 10 }, maxWidth: 820, lineHeight: 1.1 }}>
-              Selected <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>case studies.</Box>
-            </Typography>
-          </Reveal>
-          <Grid container spacing={{ xs: 3, md: 4 }}>
-            {PROJECTS.map((p, i) => (
-              <Grid size={{ xs: 12, md: 6 }} key={p.title}>
-                <Reveal delay={i * 100}>
-                  <Box sx={{
-                    p: { xs: 4, md: 5 }, height: '100%',
-                    border: `1px solid ${hexToRgba(GOLD, 0.18)}`,
-                    position: 'relative', overflow: 'hidden',
-                    transition: reducedMotion ? 'none' : 'all .6s cubic-bezier(.22,1,.36,1)',
-                    '&:before': {
-                      content: '""', position: 'absolute', top: 0, left: 0, right: 0, height: '1px',
-                      background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)`,
-                      opacity: 0, transition: 'opacity .5s ease',
-                    },
-                    '&:hover': {
-                      borderColor: GOLD,
-                      transform: reducedMotion ? 'none' : 'translateY(-4px)',
-                      boxShadow: `0 20px 60px rgba(0,0,0,0.4), 0 0 40px ${hexToRgba(GOLD, 0.12)}`,
-                      '&:before': { opacity: 1 },
-                    },
-                  }}>
-                    <Typography variant="caption" sx={{ color: GOLD }}>{p.tag}</Typography>
-                    <Typography component="h3" sx={{ mt: 2, fontSize: { xs: '1.35rem', md: '1.65rem' }, fontWeight: 500, letterSpacing: '-0.015em', lineHeight: 1.2 }}>
-                      {p.title}
-                    </Typography>
-                    <Typography variant="body1" sx={{ mt: 2.5 }}>{p.desc}</Typography>
-                    <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mt: 3 }}>
-                      {p.stack.map((s) => (
-                        <Box key={s} sx={{
-                          px: 1.5, py: 0.5, fontSize: '0.72rem', letterSpacing: '0.06em',
-                          color: 'rgba(238,238,238,0.7)',
-                          border: '1px solid rgba(238,238,238,0.08)',
-                        }}>
-                          {s}
-                        </Box>
-                      ))}
-                    </Stack>
-                  </Box>
-                </Reveal>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
-      </Box>
+      <Projects />
 
       {/* AWARDS */}
       <Box id="awards" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 } }}>
         <Container maxWidth="lg">
           <Reveal><SectionLabel index="06" title="Achievements & Awards" /></Reveal>
-          <Reveal delay={100}>
-            <Typography sx={{ fontSize: { xs: '1.6rem', md: '2.6rem' }, fontWeight: 500, letterSpacing: '-0.025em', mb: { xs: 6, md: 8 } }}>
-              Recognized for <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>quality.</Box>
-            </Typography>
-          </Reveal>
+          <AnimatedHeading
+            component="p"
+            parts={['Recognized for ', { accent: 'quality.' }]}
+            sx={{ fontSize: { xs: '1.6rem', md: '2.6rem' }, fontWeight: 500, letterSpacing: '-0.025em', mb: { xs: 6, md: 8 } }}
+          />
           <Grid container spacing={{ xs: 3, md: 4 }}>
             {AWARDS.map((a, i) => (
               <Grid size={{ xs: 12, md: 6 }} key={a.title}>
@@ -512,10 +432,12 @@ const Portfolio: React.FC = () => {
           <Reveal><SectionLabel index="07" title="Activities & Honors" /></Reveal>
           <Grid container spacing={{ xs: 5, md: 8 }} alignItems="center">
             <Grid size={{ xs: 12, md: 6 }}>
+              <AnimatedHeading
+                component="p"
+                parts={['Leadership ', { accent: 'beyond code.' }]}
+                sx={{ fontSize: { xs: '1.8rem', md: '2.8rem' }, fontWeight: 500, letterSpacing: '-0.03em', lineHeight: 1.1 }}
+              />
               <Reveal>
-                <Typography sx={{ fontSize: { xs: '1.8rem', md: '2.8rem' }, fontWeight: 500, letterSpacing: '-0.03em', lineHeight: 1.1 }}>
-                  Leadership <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>beyond code.</Box>
-                </Typography>
                 <Stack spacing={2} sx={{ mt: 5 }}>
                   {ACTIVITIES.map((a) => (
                     <Box key={a.role} sx={{
@@ -590,11 +512,11 @@ const Portfolio: React.FC = () => {
       <Box id="publications" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 } }}>
         <Container maxWidth="lg">
           <Reveal><SectionLabel index="09" title="Publications" /></Reveal>
-          <Reveal delay={100}>
-            <Typography sx={{ fontSize: { xs: '1.6rem', md: '2.6rem' }, fontWeight: 500, letterSpacing: '-0.025em', mb: { xs: 6, md: 8 } }}>
-              Published <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>research.</Box>
-            </Typography>
-          </Reveal>
+          <AnimatedHeading
+            component="p"
+            parts={['Published ', { accent: 'research.' }]}
+            sx={{ fontSize: { xs: '1.6rem', md: '2.6rem' }, fontWeight: 500, letterSpacing: '-0.025em', mb: { xs: 6, md: 8 } }}
+          />
           <Stack spacing={2}>
             {PUBLICATIONS.map((p) => (
               <Reveal key={p.title}>
@@ -634,13 +556,11 @@ const Portfolio: React.FC = () => {
       <Box id="contact" sx={{ py: { xs: 12, md: 22 }, px: { xs: 3, md: 8 }, background: SURFACE }}>
         <Container maxWidth="md">
           <Reveal><SectionLabel index="10" title="Get In Touch" /></Reveal>
-          <Reveal delay={120}>
-            <Typography sx={{ fontSize: { xs: '2.2rem', md: '4rem' }, fontWeight: 500, letterSpacing: '-0.035em', lineHeight: 1.05, mb: { xs: 5, md: 8 } }}>
-              Let’s build something
-              <br />
-              <Box component="span" sx={{ color: GOLD, fontStyle: 'italic' }}>worth keeping.</Box>
-            </Typography>
-          </Reveal>
+          <AnimatedHeading
+            component="p"
+            parts={['Let’s build something\n', { accent: 'worth keeping.' }]}
+            sx={{ fontSize: { xs: '2.2rem', md: '4rem' }, fontWeight: 500, letterSpacing: '-0.035em', lineHeight: 1.05, mb: { xs: 5, md: 8 } }}
+          />
 
           <Reveal delay={200}>
             <ContactForm />
@@ -711,11 +631,37 @@ const Portfolio: React.FC = () => {
       </Box>
 
       {/* FOOTER */}
-      <Box component="footer" sx={{ py: 4, px: { xs: 3, md: 8 }, borderTop: `1px solid ${hexToRgba(GOLD, 0.08)}` }}>
+      <Box component="footer" sx={{ py: { xs: 6, md: 8 }, px: { xs: 3, md: 8 }, borderTop: `1px solid ${hexToRgba(GOLD, 0.08)}` }}>
         <Container maxWidth="lg">
+          <Stack
+            direction={{ xs: 'column', md: 'row' }}
+            justifyContent="space-between"
+            alignItems={{ xs: 'flex-start', md: 'center' }}
+            spacing={3}
+          >
+            <Typography sx={{ fontSize: { xs: '1.4rem', md: '1.9rem' }, fontWeight: 500, letterSpacing: '-0.02em' }}>
+              Have a project in mind?{' '}
+              <Box component="a" href="#contact" onClick={(e) => { e.preventDefault(); go('contact'); }}
+                sx={{ color: GOLD, textDecoration: 'none', borderBottom: `1px solid ${hexToRgba(GOLD, 0.4)}`, '&:hover': { borderColor: GOLD } }}>
+                Let’s talk →
+              </Box>
+            </Typography>
+            <Stack direction="row" spacing={1.5} alignItems="center">
+              <Box sx={{
+                width: 8, height: 8, borderRadius: '50%', background: '#39D98A',
+                boxShadow: '0 0 10px #39D98A',
+                animation: reducedMotion ? 'none' : 'pulseDot 2.4s ease-in-out infinite',
+                '@keyframes pulseDot': { '0%,100%': { opacity: 1 }, '50%': { opacity: 0.35 } },
+              }} />
+              <Typography variant="caption" sx={{ letterSpacing: '0.08em' }}>Open to opportunities</Typography>
+            </Stack>
+          </Stack>
+
+          <Divider sx={{ my: { xs: 4, md: 5 }, borderColor: hexToRgba(GOLD, 0.1) }} />
+
           <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'flex-start', sm: 'center' }} spacing={2}>
             <Typography variant="caption" sx={{ color: 'rgba(238,238,238,0.4)', letterSpacing: '0.08em' }}>
-              © {new Date().getFullYear()} Chaitanya Ubale
+              © {new Date().getFullYear()} Chaitanya Ubale — built in Pune
             </Typography>
             <Stack direction="row" spacing={2.5} alignItems="center">
               <Typography component="a" href={CONTACT.github} target="_blank" rel="noreferrer"

@@ -107,10 +107,12 @@ const Nav: React.FC = () => {
                     onClick={(e) => go(e, n.id)}
                     aria-current={active ? "true" : undefined}
                     sx={{
+                      position: "relative",
                       cursor: "pointer",
                       fontSize: "0.82rem",
                       letterSpacing: "0.06em",
                       textDecoration: "none",
+                      pb: "3px",
                       color: active ? GOLD : "rgba(238,238,238,0.7)",
                       transition: reducedMotion ? "none" : "color .3s ease",
                       "&:hover": { color: GOLD },
@@ -121,6 +123,17 @@ const Nav: React.FC = () => {
                         fontSize: "0.65rem",
                         opacity: active ? 1 : 0.7,
                       },
+                      "&:after": {
+                        content: '""',
+                        position: "absolute",
+                        left: 0,
+                        bottom: 0,
+                        height: "1px",
+                        width: active ? "100%" : "0%",
+                        background: GOLD,
+                        transition: reducedMotion ? "none" : "width .35s cubic-bezier(.22,1,.36,1)",
+                      },
+                      "&:hover:after": { width: "100%" },
                       ...focusRing,
                     }}
                   >

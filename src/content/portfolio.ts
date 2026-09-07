@@ -3,6 +3,7 @@
  * Section components import from this file; no copy should be hard-coded in JSX.
  */
 import type { StatDisplayOptions } from "../lib/formatStat";
+import type { DiagramVariant } from "../components/Portfolio/ProjectDiagram";
 
 import goldAward from "../assets/award-gold.jpg";
 import silverAward from "../assets/award-silver.jpg";
@@ -176,6 +177,10 @@ export interface Project {
   tag: string;
   desc: string;
   stack: string[];
+  /** Flagship projects render as full-width feature rows with a diagram + metric. */
+  featured?: boolean;
+  metric?: { value: string; label: string };
+  diagram?: DiagramVariant;
 }
 
 export const PROJECTS: Project[] = [
@@ -184,12 +189,18 @@ export const PROJECTS: Project[] = [
     tag: "Fintech · Banking Integration",
     desc: "A secure backend consuming status-check APIs from Standard Chartered Bank (UK), State Bank of Mauritius, ICICI, HDFC and RBL to automate Virtual accounts creation and transactions, payment verification, processing and reconciliation — orchestrating 600 virtual accounts across 300 applications and ₹5 Crore in average weekly transaction volume.",
     stack: ["Node.js", "MS-SQL", "ICICI", "HDFC", "SBM", "RBL", "SCB"],
+    featured: true,
+    metric: { value: "₹5 Cr", label: "avg. weekly volume reconciled" },
+    diagram: "collection",
   },
   {
     title: "E-NACH System",
     tag: "Fintech · Automated Mandates",
     desc: "An automated E-NACH platform integrating ICICI APIs for end-to-end mandate registration, verification, transaction scheduling and real-time status tracking, with dynamic GST/base-amount splitting settling an average of ₹60 Lakh per month.",
     stack: ["Node.js", "ICICI APIs", "E-NACH", "Automated Billing"],
+    featured: true,
+    metric: { value: "₹60 L", label: "settled per month, auto-split" },
+    diagram: "nach",
   },
   {
     title: "VJ-Carnival 2026",
@@ -208,6 +219,9 @@ export const PROJECTS: Project[] = [
     tag: "Fintech · Payment Infrastructure",
     desc: "A highly secure, enterprise-grade payment processing platform developed as an in-house alternative to Razorpay. Built by directly consuming ICICI banking APIs, the system features a bulletproof transaction architecture with rigorous security protocols, maintainable audit logging, real-time tracking, and proactive system monitoring.",
     stack: ["Node.js", "Express.js", "PostgreSQL", "ICICI APIs", "System Monitoring"],
+    featured: true,
+    metric: { value: "0", label: "third-party processor fees" },
+    diagram: "gateway",
   },
   {
     title: "LLM Application with RAG",
