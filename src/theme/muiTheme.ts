@@ -59,6 +59,17 @@ const muiTheme = createTheme({
           letterSpacing: '0.08em',
           textTransform: 'uppercase',
           transition: 'all .45s cubic-bezier(.22,1,.36,1)',
+          '& .MuiButton-endIcon': {
+            transition: 'transform .4s cubic-bezier(.22,1,.36,1)',
+          },
+          '&:hover .MuiButton-endIcon': {
+            transform: 'translate(3px, -3px)',
+          },
+          '@media (prefers-reduced-motion: reduce)': {
+            transition: 'none',
+            '& .MuiButton-endIcon': { transition: 'none' },
+            '&:hover .MuiButton-endIcon': { transform: 'none' },
+          },
         },
         outlined: {
           borderColor: 'rgba(197,160,89,0.4)',
